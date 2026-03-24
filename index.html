@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TEST LOGIN</title>
+<title>Test Login</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap');
 
@@ -56,7 +56,7 @@
     position: relative;
     z-index: 10;
     width: 90%;
-    max-width: 440px;
+    max-width: 320px;
     padding: 20px;
   }
 
@@ -74,12 +74,12 @@
     background: rgba(10, 16, 35, 0.9);
     border: 1px solid rgba(51, 156, 255, 0.2);
     border-radius: 12px;
-    padding: 36px 28px;
+    padding: 20px 20px;
     backdrop-filter: blur(20px);
     box-shadow: 0 0 40px rgba(51,156,255,0.06), 0 20px 60px rgba(0,0,0,0.5);
   }
 
-  .input-group { margin-bottom: 18px; }
+  .input-group { margin-bottom: 12px; }
 
   .input-group label {
     display: block; font-family: 'JetBrains Mono', monospace;
@@ -88,7 +88,7 @@
   }
 
   .input-group input {
-    width: 100%; padding: 12px 16px;
+    width: 100%; padding: 10px 14px;
     background: rgba(51, 156, 255, 0.06);
     border: 1px solid rgba(51, 156, 255, 0.2);
     border-radius: 8px; color: #fff;
@@ -105,27 +105,27 @@
   .input-group input::placeholder { color: rgba(255,255,255,0.25); }
 
   .btn {
-    width: 100%; padding: 14px;
+    width: 100%; padding: 10px;
     background: linear-gradient(135deg, var(--blue-bright), var(--blue-dark));
     border: none; border-radius: 8px; color: #fff;
     font-family: 'JetBrains Mono', monospace;
     font-size: 14px; font-weight: 700; letter-spacing: 2px;
     cursor: pointer; transition: all 0.3s;
-    text-transform: uppercase; margin-top: 8px;
+    text-transform: uppercase; margin-top: 4px;
   }
 
   .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(51,156,255,0.35); }
   .btn:active { transform: translateY(0); }
 
   .status {
-    margin-top: 16px; font-family: 'JetBrains Mono', monospace;
-    font-size: 12px; font-weight: 700; text-align: center; min-height: 20px; transition: all 0.3s;
+    margin-top: 10px; font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 700; text-align: center; min-height: 16px; transition: all 0.3s;
   }
   .status.error { color: #ff5555; }
   .status.success { color: var(--blue-bright); }
 
   .matrix-log {
-    margin-bottom: 24px;
+    margin-bottom: 14px;
     background: rgba(0, 0, 0, 0.5);
     border-radius: 8px;
     border: 1px solid rgba(51, 156, 255, 0.1);
@@ -137,7 +137,7 @@
     font-family: 'JetBrains Mono', monospace;
     font-size: 9px; font-weight: 700;
     color: rgba(91, 184, 255, 0.4);
-    padding: 10px 14px 4px;
+    padding: 8px 10px 2px;
     letter-spacing: 1px;
   }
 
@@ -145,22 +145,22 @@
     display: flex;
     justify-content: center;
     gap: 0;
-    padding: 8px 14px 14px;
+    padding: 6px 10px 10px;
   }
 
   .matrix-col {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 32px;
+    width: 20px;
     gap: 2px;
   }
 
   .matrix-cell {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 14px; font-weight: 700;
-    width: 28px;
-    height: 24px;
+    font-size: 13px; font-weight: 700;
+    width: 18px;
+    height: 22px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -238,7 +238,7 @@
   .attempts-left {
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.25);
-    text-align: right; margin-top: 8px;
+    text-align: right; margin-top: 4px;
   }
 
   @keyframes shake {
