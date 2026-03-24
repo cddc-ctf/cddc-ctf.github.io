@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEST LOGIN</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --blue: #339cff;
+    --blue-bright: #5bb8ff;
+    --blue-dark: #1a7ae6;
+  }
+
+  body {
+    min-height: 100vh;
+    background: #080c18;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      linear-gradient(rgba(51, 156, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(51, 156, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    animation: gridMove 20s linear infinite;
+    z-index: 0;
+  }
+
+  @keyframes gridMove {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(40px, 40px); }
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px);
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  .container {
+    position: relative;
+    z-index: 10;
+    width: 90%;
+    max-width: 440px;
+    padding: 20px;
+  }
+
+  .terminal-header {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--blue);
+    font-size: 11px;
+    margin-bottom: 8px;
+    opacity: 0.8;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+
+  .card {
+    background: rgba(10, 16, 35, 0.9);
+    border: 1px solid rgba(51, 156, 255, 0.2);
+    border-radius: 12px;
+    padding: 36px 28px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 40px rgba(51,156,255,0.06), 0 20px 60px rgba(0,0,0,0.5);
+  }
+
+  .input-group { margin-bottom: 18px; }
+
+  .input-group label {
+    display: block; font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: rgba(91, 184, 255, 0.7); font-weight: 700;
+    margin-bottom: 6px; letter-spacing: 1px; text-transform: uppercase;
+  }
+
+  .input-group input {
+    width: 100%; padding: 12px 16px;
+    background: rgba(51, 156, 255, 0.06);
+    border: 1px solid rgba(51, 156, 255, 0.2);
+    border-radius: 8px; color: #fff;
+    font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700;
+    outline: none; transition: all 0.3s;
+  }
+
+  .input-group input:focus {
+    border-color: var(--blue-bright);
+    box-shadow: 0 0 15px rgba(51,156,255,0.15);
+    background: rgba(51, 156, 255, 0.1);
+  }
+
+  .input-group input::placeholder { color: rgba(255,255,255,0.25); }
+
+  .btn {
+    width: 100%; padding: 14px;
+    background: linear-gradient(135deg, var(--blue-bright), var(--blue-dark));
+    border: none; border-radius: 8px; color: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px; font-weight: 700; letter-spacing: 2px;
+    cursor: pointer; transition: all 0.3s;
+    text-transform: uppercase; margin-top: 8px;
+  }
+
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(51,156,255,0.35); }
+  .btn:active { transform: translateY(0); }
+
+  .status {
+    margin-top: 16px; font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 700; text-align: center; min-height: 20px; transition: all 0.3s;
+  }
+  .status.error { color: #ff5555; }
+  .status.success { color: var(--blue-bright); }
+
+  .matrix-log {
+    margin-bottom: 24px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    border: 1px solid rgba(51, 156, 255, 0.1);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .matrix-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; font-weight: 700;
+    color: rgba(91, 184, 255, 0.4);
+    padding: 10px 14px 4px;
+    letter-spacing: 1px;
+  }
+
+  .matrix-columns {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    padding: 8px 14px 14px;
+  }
+
+  .matrix-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 32px;
+    gap: 2px;
+  }
+
+  .matrix-cell {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px; font-weight: 700;
+    width: 28px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(51, 156, 255, 0.12);
+    transition: color 0.3s, text-shadow 0.3s;
+  }
+
+  .matrix-cell.bright {
+    color: rgba(91, 184, 255, 1);
+    text-shadow: 0 0 10px rgba(91, 184, 255, 0.7);
+  }
+
+  .matrix-cell.medium {
+    color: rgba(51, 156, 255, 0.5);
+  }
+
+  .matrix-cell.dim {
+    color: rgba(51, 156, 255, 0.18);
+  }
+
+  .footer-text {
+    text-align: center; margin-top: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.18); letter-spacing: 1px;
+  }
+
+  .overlay {
+    display: none; position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.92); z-index: 200;
+    align-items: center; justify-content: center;
+    flex-direction: column; padding: 20px; text-align: center;
+    animation: fadeIn 0.5s ease;
+  }
+  .overlay.show { display: flex; }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .overlay .flag-box {
+    background: rgba(51,156,255,0.08);
+    border: 2px solid var(--blue-bright); border-radius: 16px;
+    padding: 40px 32px; max-width: 400px; width: 100%;
+    animation: scaleIn 0.5s ease;
+  }
+
+  @keyframes scaleIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .overlay .flag-box h2 {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--blue-bright); font-size: 22px; font-weight: 700; margin-bottom: 12px; letter-spacing: 2px;
+  }
+
+  .overlay .flag-box .flag {
+    font-family: 'JetBrains Mono', monospace;
+    color: #fff; font-size: 16px; font-weight: 700;
+    background: rgba(0,0,0,0.4); padding: 12px 16px;
+    border-radius: 8px; margin: 16px 0; word-break: break-all;
+  }
+
+  .overlay .flag-box p {
+    color: rgba(255,255,255,0.65); font-size: 14px; font-weight: 700;
+    line-height: 1.6; margin-top: 16px;
+  }
+
+  .overlay .flag-box a {
+    display: inline-block; margin-top: 20px; padding: 12px 28px;
+    background: var(--blue-bright); color: #0a0e17; text-decoration: none;
+    border-radius: 8px; font-family: 'JetBrains Mono', monospace;
+    font-weight: 700; font-size: 13px; letter-spacing: 1px;
+  }
+
+  .attempts-left {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.25);
+    text-align: right; margin-top: 8px;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+  .shake { animation: shake 0.3s ease; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="terminal-header">// TEST LOGIN v68.83.84.65</div>
+
+  <div class="card" id="loginCard">
+
+    <div class="matrix-log">
+      <div class="matrix-label">> DATA_STREAM</div>
+      <div class="matrix-columns" id="matrixColumns"></div>
+    </div>
+
+    <div class="input-group">
+      <label>Agent ID</label>
+      <input type="text" id="username" value="agent_01" disabled style="opacity: 0.5; cursor: not-allowed;">
+    </div>
+
+    <div class="input-group">
+      <label>Access Key</label>
+      <input type="password" id="password" placeholder="Enter access key" autocomplete="off">
+    </div>
+
+    <button class="btn" onclick="attemptLogin()">Authenticate</button>
+
+    <div class="status" id="status"></div>
+    <div class="attempts-left" id="attempts"></div>
+  </div>
+
+  <div class="footer-text"></div>
+</div>
+
+<div class="overlay" id="successOverlay">
+  <div class="flag-box">
+    <h2>ACCESS GRANTED</h2>
+    <div class="flag" id="flagDisplay"></div>
+    <p>Nice work — whether that was your first flag or one of many.<br>Ready for a real challenge?</p>
+    <p style="color: rgba(255,255,255,0.45); font-size: 12px; margin-top: 8px;">
+      CDDC is a <strong style="color: var(--blue-bright);">free</strong> cybersecurity competition <strong style="color: var(--blue-bright);">with attractive prizes</strong>, open to students as part of DSTA BrainHack.
+    </p>
+    <a href="https://dsta.gov.sg/brainhack" target="_blank">LEARN ABOUT CDDC →</a>
+  </div>
+</div>
+
+<script>
+  // Obfuscated values
+  const _k = [67,68,68,67,50,48,50,54,33];
+  const key = _k.map(c => String.fromCharCode(c)).join('');
+  const rows = 7;
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*';
+  const container = document.getElementById('matrixColumns');
+
+  const cells = [];
+  for (let c = 0; c < key.length; c++) {
+    const col = document.createElement('div');
+    col.className = 'matrix-col';
+    const colCells = [];
+    for (let r = 0; r < rows; r++) {
+      const cell = document.createElement('div');
+      cell.className = 'matrix-cell';
+      cell.textContent = chars[Math.floor(Math.random() * chars.length)];
+      col.appendChild(cell);
+      colCells.push(cell);
+    }
+    container.appendChild(col);
+    cells.push(colCells);
+  }
+
+  const state = key.split('').map(() => ({
+    pos: -Math.floor(Math.random() * 6),
+    speed: 0.04 + Math.random() * 0.03,
+    progress: 0
+  }));
+
+  function randomChar() {
+    return chars[Math.floor(Math.random() * chars.length)];
+  }
+
+  function tick() {
+    for (let c = 0; c < key.length; c++) {
+      const s = state[c];
+      s.progress += s.speed;
+
+      if (s.progress >= 1) {
+        s.progress = 0;
+        s.pos++;
+        if (s.pos > rows + 2) {
+          s.pos = -Math.floor(Math.random() * 4);
+        }
+      }
+
+      for (let r = 0; r < rows; r++) {
+        const cell = cells[c][r];
+        const dist = s.pos - r;
+
+        if (dist === 0) {
+          cell.textContent = key[c];
+          cell.className = 'matrix-cell bright';
+        } else if (dist === 1) {
+          cell.textContent = key[c];
+          cell.className = 'matrix-cell medium';
+        } else if (dist > 1 && dist < 4) {
+          if (Math.random() < 0.15) cell.textContent = randomChar();
+          cell.className = 'matrix-cell dim';
+        } else {
+          if (Math.random() < 0.03) cell.textContent = randomChar();
+          cell.className = 'matrix-cell';
+        }
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+
+  tick();
+
+  let attempts = 0;
+  const maxHints = [
+    "Hint: Watch the data stream carefully...",
+    "Hint: Each column is showing you a character...",
+    "Hint: Read the bright characters from left to right...",
+    "Hint: Don't forget the special character at the end."
+  ];
+
+  const password = key;
+
+  function attemptLogin() {
+    const input = document.getElementById('password').value.trim();
+    const agent = document.getElementById('username').value.trim();
+    const status = document.getElementById('status');
+    const card = document.getElementById('loginCard');
+
+    if (agent === 'agent_01' && input === password) {
+      status.className = 'status success';
+      status.textContent = '● Authentication successful';
+      const _f = [67,68,68,67,50,48,50,54,123,119,51,108,108,95,100,48,110,51,33,125];
+      document.getElementById('flagDisplay').textContent = _f.map(c => String.fromCharCode(c)).join('');
+      setTimeout(() => {
+        document.getElementById('successOverlay').classList.add('show');
+      }, 600);
+      return;
+    }
+
+    attempts++;
+    card.classList.remove('shake');
+    void card.offsetWidth;
+    card.classList.add('shake');
+
+    status.className = 'status error';
+
+    if (attempts <= maxHints.length) {
+      status.textContent = '✗ ACCESS DENIED — ' + maxHints[attempts - 1];
+    } else {
+      status.textContent = '✗ ACCESS DENIED — Read the bright characters left to right. Include the special character.';
+    }
+
+    document.getElementById('attempts').textContent = 'Attempts: ' + attempts;
+    document.getElementById('password').value = '';
+  }
+
+  document.getElementById('password').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') attemptLogin();
+  });
+</script>
+
+</body>
+</html>
