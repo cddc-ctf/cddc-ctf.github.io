@@ -20,10 +20,11 @@
     background: #080c18;
     font-family: 'Inter', sans-serif;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     overflow: hidden;
     position: relative;
+    padding-top: 20px;
   }
 
   body::before {
@@ -191,8 +192,8 @@
     display: none; position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(0,0,0,0.92); z-index: 200;
-    align-items: center; justify-content: center;
-    flex-direction: column; padding: 20px; text-align: center;
+    align-items: center; justify-content: flex-start;
+    flex-direction: column; padding: 20px; padding-top: 20px; text-align: center;
     animation: fadeIn 0.5s ease;
   }
   .overlay.show { display: flex; }
