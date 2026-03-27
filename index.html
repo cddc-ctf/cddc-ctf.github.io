@@ -3,15 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Test Login</title>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-KFH2MB0EGV"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-KFH2MB0EGV');
-</script>
+<title>CDDC 2026</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap');
 
@@ -21,6 +13,7 @@
     --blue: #339cff;
     --blue-bright: #5bb8ff;
     --blue-dark: #1a7ae6;
+    --muted: rgba(91, 184, 255, 0.75);
   }
 
   body {
@@ -30,9 +23,10 @@
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    overflow: hidden;
+    overflow-x: hidden;
     position: relative;
     padding-top: 20px;
+    padding-bottom: 40px;
   }
 
   body::before {
@@ -66,7 +60,7 @@
     z-index: 10;
     width: 90%;
     max-width: 320px;
-    padding: 20px;
+    padding: 16px;
   }
 
   .terminal-header {
@@ -83,342 +77,349 @@
     background: rgba(10, 16, 35, 0.9);
     border: 1px solid rgba(51, 156, 255, 0.2);
     border-radius: 12px;
-    padding: 20px 20px;
+    padding: 18px;
     backdrop-filter: blur(20px);
     box-shadow: 0 0 40px rgba(51,156,255,0.06), 0 20px 60px rgba(0,0,0,0.5);
+    margin-bottom: 12px;
   }
 
-  .input-group { margin-bottom: 12px; }
-
-  .input-group label {
-    display: block; font-family: 'JetBrains Mono', monospace;
-    font-size: 11px; color: rgba(91, 184, 255, 0.7); font-weight: 700;
-    margin-bottom: 6px; letter-spacing: 1px; text-transform: uppercase;
+  /* ── TITLE ── */
+  .title-section {
+    text-align: center;
+    padding: 4px 0;
   }
 
-  .input-group input {
-    width: 100%; padding: 10px 14px;
-    background: rgba(51, 156, 255, 0.06);
-    border: 1px solid rgba(51, 156, 255, 0.2);
-    border-radius: 8px; color: #fff;
-    font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700;
-    outline: none; transition: all 0.3s;
-  }
-
-  .input-group input:focus {
-    border-color: var(--blue-bright);
-    box-shadow: 0 0 15px rgba(51,156,255,0.15);
-    background: rgba(51, 156, 255, 0.1);
-  }
-
-  .input-group input::placeholder { color: rgba(255,255,255,0.25); }
-
-  .btn {
-    width: 100%; padding: 10px;
-    background: linear-gradient(135deg, var(--blue-bright), var(--blue-dark));
-    border: none; border-radius: 8px; color: #fff;
+  .title-sub {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 14px; font-weight: 700; letter-spacing: 2px;
-    cursor: pointer; transition: all 0.3s;
-    text-transform: uppercase; margin-top: 4px;
+    font-size: 9px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 2px;
   }
 
-  .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(51,156,255,0.35); }
-  .btn:active { transform: translateY(0); }
-
-  .status {
-    margin-top: 10px; font-family: 'JetBrains Mono', monospace;
-    font-size: 12px; font-weight: 700; text-align: center; min-height: 16px; transition: all 0.3s;
-  }
-  .status.error { color: #ff5555; }
-  .status.success { color: var(--blue-bright); }
-
-  .matrix-log {
-    margin-bottom: 14px;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 8px;
-    border: 1px solid rgba(51, 156, 255, 0.1);
-    overflow: hidden;
-    position: relative;
-  }
-
-  .matrix-label {
+  /* ── COUNTDOWN ── */
+  .countdown-label {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 9px; font-weight: 700;
-    color: rgba(91, 184, 255, 0.4);
-    padding: 8px 10px 2px;
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--muted);
     letter-spacing: 1px;
+    margin-bottom: 12px;
   }
 
-  .matrix-columns {
+  .countdown-row {
     display: flex;
     justify-content: center;
-    gap: 0;
-    padding: 6px 10px 10px;
-  }
-
-  .matrix-col {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 20px;
+    align-items: baseline;
     gap: 2px;
   }
 
-  .matrix-cell {
+  .cd-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .cd-value {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 13px; font-weight: 700;
-    width: 18px;
-    height: 22px;
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+    text-shadow: 0 0 16px rgba(91, 184, 255, 0.25);
+  }
+
+  .cd-sep {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--muted);
+    line-height: 1;
+    margin: 0 1px;
+  }
+
+  .cd-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 2px;
+    margin-top: 6px;
+    text-transform: uppercase;
+  }
+
+  /* ── KEY DATES ── */
+  .event-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+
+  .event-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .event-row {
     display: flex;
     align-items: center;
-    justify-content: center;
-    color: rgba(51, 156, 255, 0.12);
-    transition: color 0.3s, text-shadow 0.3s;
+    justify-content: space-between;
+    padding: 6px 0;
   }
 
-  .matrix-cell.bright {
-    color: rgba(91, 184, 255, 1);
-    text-shadow: 0 0 10px rgba(91, 184, 255, 0.7);
+  .event-row + .event-row {
+    border-top: 1px solid rgba(51, 156, 255, 0.08);
   }
 
-  .matrix-cell.medium {
-    color: rgba(51, 156, 255, 0.5);
-  }
-
-  .matrix-cell.dim {
-    color: rgba(51, 156, 255, 0.18);
-  }
-
-  .footer-text {
-    text-align: center; margin-top: 20px;
+  .event-name {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.18); letter-spacing: 1px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 1px;
   }
 
-  .overlay {
-    display: none; position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.92); z-index: 200;
-    align-items: center; justify-content: flex-start;
-    flex-direction: column; padding: 20px; padding-top: 20px; text-align: center;
-    animation: fadeIn 0.5s ease;
-  }
-  .overlay.show { display: flex; }
-
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-  .overlay .flag-box {
-    background: rgba(51,156,255,0.08);
-    border: 2px solid var(--blue-bright); border-radius: 16px;
-    padding: 24px 20px; max-width: 320px; width: 90%;
-    animation: scaleIn 0.5s ease;
-  }
-
-  @keyframes scaleIn {
-    from { transform: scale(0.8); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-  }
-
-  .overlay .flag-box h2 {
+  .event-date {
     font-family: 'JetBrains Mono', monospace;
-    color: var(--blue-bright); font-size: 22px; font-weight: 700; margin-bottom: 12px; letter-spacing: 2px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 1px;
   }
 
-  .overlay .flag-box .flag {
+  /* ── CHALLENGES ── */
+  .section-label {
     font-family: 'JetBrains Mono', monospace;
-    color: #fff; font-size: 16px; font-weight: 700;
-    background: rgba(0,0,0,0.4); padding: 12px 16px;
-    border-radius: 8px; margin: 16px 0; word-break: break-all;
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin-bottom: 10px;
   }
 
-  .overlay .flag-box p {
-    color: rgba(255,255,255,0.65); font-size: 14px; font-weight: 700;
-    line-height: 1.6; margin-top: 16px;
+  .challenge-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
 
-  .overlay .flag-box a {
-    display: inline-block; margin-top: 20px; padding: 12px 28px;
-    background: var(--blue-bright); color: #0a0e17; text-decoration: none;
-    border-radius: 8px; font-family: 'JetBrains Mono', monospace;
-    font-weight: 700; font-size: 13px; letter-spacing: 1px;
+  .challenge-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 14px;
+    background: rgba(51, 156, 255, 0.04);
+    border: 1px solid rgba(51, 156, 255, 0.12);
+    border-radius: 10px;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
   }
 
-  .attempts-left {
+  .challenge-num {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.25);
-    text-align: right; margin-top: 4px;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--blue);
+    min-width: 32px;
+    text-align: center;
+    opacity: 0.6;
   }
 
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
+  .challenge-info { flex: 1; }
+
+  .challenge-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 1px;
   }
-  .shake { animation: shake 0.3s ease; }
+
+  .challenge-arrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: #5bb8ff;
+  }
+
+  /* ── CTA BUTTON ── */
+  .cta-wrap {
+    margin-top: 10px;
+    position: relative;
+    z-index: 10;
+  }
+
+  .cta-btn {
+    display: block;
+    width: 100%;
+    padding: 7px 12px;
+    background: transparent;
+    border: 1px solid rgba(51, 156, 255, 0.2);
+    border-radius: 6px;
+    color: var(--blue-bright);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  /* ── PARTICLES ── */
+  .particle {
+    position: fixed;
+    width: 2px; height: 2px;
+    background: var(--blue-bright);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 5;
+    opacity: 0;
+    animation: float linear infinite;
+  }
+
+  @keyframes float {
+    0% { transform: translateY(100vh); opacity: 0; }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.6; }
+    100% { transform: translateY(-20px); opacity: 0; }
+  }
 </style>
 </head>
 <body>
 
+<div id="particles"></div>
+
 <div class="container">
-  <div class="terminal-header">// TEST LOGIN v68.83.84.65</div>
+  <div class="terminal-header">// CDDC_PORTAL v68.83.84.65</div>
 
-  <div class="card" id="loginCard">
-
-    <div class="matrix-log">
-      <div class="matrix-label">> DATA_STREAM</div>
-      <div class="matrix-columns" id="matrixColumns"></div>
+  <!-- Title -->
+  <div class="card" style="text-align: center;">
+    <div class="title-section">
+      <div class="title-sub">CYBER DEFENDERS DISCOVERY CAMP</div>
     </div>
-
-    <div class="input-group">
-      <label>Agent ID</label>
-      <input type="text" id="username" value="agent_01" disabled style="opacity: 0.5; cursor: not-allowed;">
-    </div>
-
-    <div class="input-group">
-      <label>Access Key</label>
-      <input type="password" id="password" placeholder="Enter access key" autocomplete="off">
-    </div>
-
-    <button class="btn" onclick="attemptLogin()">Authenticate</button>
-
-    <div class="status" id="status"></div>
-    <div class="attempts-left" id="attempts"></div>
   </div>
 
-  <div class="footer-text"></div>
-</div>
-
-<div class="overlay" id="successOverlay">
-  <div class="flag-box">
-    <h2>ACCESS GRANTED</h2>
-    <div class="flag" id="flagDisplay"></div>
-    <p>Nice work — whether that was your first flag or one of many. Ready for a real challenge?</p>
-    <p style="color: rgba(255,255,255,0.45); font-size: 12px; font-weight: 400; margin-top: 8px;">
-      CDDC is a <strong style="color: var(--blue-bright); font-weight: 700;">free</strong> cybersecurity competition <strong style="color: var(--blue-bright); font-weight: 700;">with attractive prizes</strong>, open to students as part of DSTA BrainHack.
-    </p>
-    <a href="https://dsta.gov.sg/brainhack" target="_blank">LEARN ABOUT CDDC →</a>
+  <!-- Countdown -->
+  <div class="card">
+    <div class="countdown-label">> REGISTRATION_CLOSES</div>
+    <div class="countdown-row">
+      <div class="cd-unit">
+        <div class="cd-value" id="days">--</div>
+        <div class="cd-label">Days</div>
+      </div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit">
+        <div class="cd-value" id="hours">--</div>
+        <div class="cd-label">Hrs</div>
+      </div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit">
+        <div class="cd-value" id="mins">--</div>
+        <div class="cd-label">Min</div>
+      </div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit">
+        <div class="cd-value" id="secs">--</div>
+        <div class="cd-label">Sec</div>
+      </div>
+    </div>
+    <div class="cta-wrap">
+      <a href="https://form.gov.sg/69a8e2c13646169c05291a98" target="_blank" class="cta-btn">REGISTER NOW →</a>
+    </div>
   </div>
+
+  <!-- Key Dates -->
+  <div class="card">
+    <div class="event-label">> KEY_DATES</div>
+    <div class="event-list">
+      <div class="event-row">
+        <div class="event-name">QUALIFIERS</div>
+        <div class="event-date">16 – 17 MAY 2026</div>
+      </div>
+      <div class="event-row">
+        <div class="event-name">FINALS</div>
+        <div class="event-date">10 – 11 JUN 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Challenges -->
+  <div class="card">
+    <div class="section-label">> PUZZLES</div>
+    <div class="challenge-list">
+
+      <a href="2.html" class="challenge-link">
+        <div class="challenge-num">02</div>
+        <div class="challenge-info">
+          <div class="challenge-name">SIGNAL RECOVERY</div>
+        </div>
+        <div class="challenge-arrow">›</div>
+      </a>
+
+      <a href="1.html" class="challenge-link">
+        <div class="challenge-num">01</div>
+        <div class="challenge-info">
+          <div class="challenge-name">TEST LOGIN</div>
+        </div>
+        <div class="challenge-arrow">›</div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- CTA removed from here, now inside countdown card -->
 </div>
 
 <script>
-  // Obfuscated values
-  const _k = [67,68,68,67,50,48,50,54,33];
-  const key = _k.map(c => String.fromCharCode(c)).join('');
-  const rows = 7;
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*';
-  const container = document.getElementById('matrixColumns');
+  const TARGET = new Date('2026-05-03T00:00:00+08:00').getTime();
 
-  const cells = [];
-  for (let c = 0; c < key.length; c++) {
-    const col = document.createElement('div');
-    col.className = 'matrix-col';
-    const colCells = [];
-    for (let r = 0; r < rows; r++) {
-      const cell = document.createElement('div');
-      cell.className = 'matrix-cell';
-      cell.textContent = chars[Math.floor(Math.random() * chars.length)];
-      col.appendChild(cell);
-      colCells.push(cell);
-    }
-    container.appendChild(col);
-    cells.push(colCells);
-  }
+  function pad(n) { return String(n).padStart(2, '0'); }
 
-  const state = key.split('').map(() => ({
-    pos: -Math.floor(Math.random() * 6),
-    speed: 0.04 + Math.random() * 0.03,
-    progress: 0
-  }));
+  function updateCountdown() {
+    const now = Date.now();
+    let diff = TARGET - now;
 
-  function randomChar() {
-    return chars[Math.floor(Math.random() * chars.length)];
-  }
-
-  function tick() {
-    for (let c = 0; c < key.length; c++) {
-      const s = state[c];
-      s.progress += s.speed;
-
-      if (s.progress >= 1) {
-        s.progress = 0;
-        s.pos++;
-        if (s.pos > rows + 2) {
-          s.pos = -Math.floor(Math.random() * 4);
-        }
-      }
-
-      for (let r = 0; r < rows; r++) {
-        const cell = cells[c][r];
-        const dist = s.pos - r;
-
-        if (dist === 0) {
-          cell.textContent = key[c];
-          cell.className = 'matrix-cell bright';
-        } else if (dist === 1) {
-          cell.textContent = key[c];
-          cell.className = 'matrix-cell medium';
-        } else if (dist > 1 && dist < 4) {
-          if (Math.random() < 0.15) cell.textContent = randomChar();
-          cell.className = 'matrix-cell dim';
-        } else {
-          if (Math.random() < 0.03) cell.textContent = randomChar();
-          cell.className = 'matrix-cell';
-        }
-      }
-    }
-    requestAnimationFrame(tick);
-  }
-
-  tick();
-
-  let attempts = 0;
-  const maxHints = [
-    "Hint: Watch the data stream carefully...",
-    "Hint: Each column is showing you a character...",
-    "Hint: Read the bright characters from left to right...",
-    "Hint: Don't forget the special character at the end."
-  ];
-
-  const password = key;
-
-  function attemptLogin() {
-    const input = document.getElementById('password').value.trim();
-    const agent = document.getElementById('username').value.trim();
-    const status = document.getElementById('status');
-    const card = document.getElementById('loginCard');
-
-    if (agent === 'agent_01' && input === password) {
-      status.className = 'status success';
-      status.textContent = '● Authentication successful';
-      const _f = [67,68,68,67,50,48,50,54,123,119,51,108,108,95,100,48,110,51,33,125];
-      document.getElementById('flagDisplay').textContent = _f.map(c => String.fromCharCode(c)).join('');
-      setTimeout(() => {
-        document.getElementById('successOverlay').classList.add('show');
-      }, 600);
+    if (diff <= 0) {
+      document.getElementById('days').textContent = '00';
+      document.getElementById('hours').textContent = '00';
+      document.getElementById('mins').textContent = '00';
+      document.getElementById('secs').textContent = '00';
       return;
     }
 
-    attempts++;
-    card.classList.remove('shake');
-    void card.offsetWidth;
-    card.classList.add('shake');
+    const d = Math.floor(diff / 86400000); diff %= 86400000;
+    const h = Math.floor(diff / 3600000); diff %= 3600000;
+    const m = Math.floor(diff / 60000); diff %= 60000;
+    const s = Math.floor(diff / 1000);
 
-    status.className = 'status error';
-
-    if (attempts <= maxHints.length) {
-      status.textContent = '✗ ACCESS DENIED — ' + maxHints[attempts - 1];
-    } else {
-      status.textContent = '✗ ACCESS DENIED — Read the bright characters left to right. Include the special character.';
-    }
-
-    document.getElementById('attempts').textContent = 'Attempts: ' + attempts;
-    document.getElementById('password').value = '';
+    document.getElementById('days').textContent = pad(d);
+    document.getElementById('hours').textContent = pad(h);
+    document.getElementById('mins').textContent = pad(m);
+    document.getElementById('secs').textContent = pad(s);
   }
 
-  document.getElementById('password').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') attemptLogin();
-  });
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  const pContainer = document.getElementById('particles');
+  function spawnParticle() {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.animationDuration = (8 + Math.random() * 12) + 's';
+    p.style.width = p.style.height = (1 + Math.random() * 2) + 'px';
+    pContainer.appendChild(p);
+    setTimeout(() => p.remove(), 20000);
+  }
+  setInterval(spawnParticle, 600);
+  for (let i = 0; i < 8; i++) setTimeout(spawnParticle, i * 200);
 </script>
 
 </body>
