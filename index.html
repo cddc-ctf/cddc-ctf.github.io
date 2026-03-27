@@ -22,6 +22,8 @@
     --blue-bright: #5bb8ff;
     --blue-dark: #1a7ae6;
     --muted: rgba(91, 184, 255, 0.75);
+    --neon: #7dd3ff;
+    --neon-glow: rgba(125, 211, 255, 0.6);
   }
 
   body {
@@ -34,7 +36,7 @@
     overflow-x: hidden;
     position: relative;
     padding-top: 20px;
-    padding-bottom: 40px;
+    padding-bottom: 60px;
   }
 
   body::before {
@@ -92,203 +94,177 @@
   }
 
   /* ── TITLE ── */
-  .title-section {
-    text-align: center;
-    padding: 4px 0;
-  }
+  .title-section { text-align: center; padding: 4px 0; }
 
   .title-sub {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 9px;
-    font-weight: 700;
-    color: #fff;
-    letter-spacing: 2px;
+    font-size: 9px; font-weight: 700;
+    color: #fff; letter-spacing: 2px;
   }
 
   /* ── COUNTDOWN ── */
   .countdown-label {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 9px;
-    font-weight: 700;
-    color: var(--muted);
-    letter-spacing: 1px;
-    margin-bottom: 12px;
+    font-size: 9px; font-weight: 700;
+    color: var(--muted); letter-spacing: 1px; margin-bottom: 12px;
   }
 
   .countdown-row {
-    display: flex;
-    justify-content: center;
-    align-items: baseline;
-    gap: 2px;
+    display: flex; justify-content: center; align-items: baseline; gap: 2px;
   }
 
-  .cd-unit {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+  .cd-unit { display: flex; flex-direction: column; align-items: center; }
 
   .cd-value {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 28px;
-    font-weight: 700;
-    color: #fff;
-    line-height: 1;
+    font-size: 28px; font-weight: 700; color: #fff; line-height: 1;
     text-shadow: 0 0 16px rgba(91, 184, 255, 0.25);
   }
 
   .cd-sep {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--muted);
-    line-height: 1;
-    margin: 0 1px;
+    font-size: 28px; font-weight: 700; color: var(--muted); line-height: 1; margin: 0 1px;
   }
 
   .cd-label {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 8px;
-    font-weight: 700;
-    color: var(--muted);
-    letter-spacing: 2px;
-    margin-top: 6px;
-    text-transform: uppercase;
+    font-size: 8px; font-weight: 700; color: var(--muted);
+    letter-spacing: 2px; margin-top: 6px; text-transform: uppercase;
   }
 
   /* ── KEY DATES ── */
   .event-label {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 9px;
-    font-weight: 700;
-    color: var(--muted);
-    letter-spacing: 1px;
-    margin-bottom: 10px;
+    font-size: 9px; font-weight: 700;
+    color: var(--muted); letter-spacing: 1px; margin-bottom: 10px;
   }
 
-  .event-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
+  .event-list { display: flex; flex-direction: column; gap: 0; }
 
   .event-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 6px 0;
+    display: flex; align-items: center; justify-content: space-between; padding: 6px 0;
   }
 
-  .event-row + .event-row {
-    border-top: 1px solid rgba(51, 156, 255, 0.08);
-  }
+  .event-row + .event-row { border-top: 1px solid rgba(51, 156, 255, 0.08); }
 
   .event-name {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    font-weight: 700;
-    color: var(--muted);
-    letter-spacing: 1px;
+    font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 1px;
   }
 
   .event-date {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    font-weight: 700;
-    color: #fff;
-    letter-spacing: 1px;
+    font-size: 11px; font-weight: 700; color: #fff; letter-spacing: 1px;
   }
 
   /* ── CHALLENGES ── */
   .section-label {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 9px;
-    font-weight: 700;
-    color: var(--muted);
-    letter-spacing: 1px;
-    margin-bottom: 10px;
+    font-size: 9px; font-weight: 700;
+    color: var(--neon); letter-spacing: 1px; margin-bottom: 10px;
+    text-shadow: 0 0 6px rgba(125, 211, 255, 0.3);
   }
 
-  .challenge-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+  .challenge-list { display: flex; flex-direction: column; gap: 8px; }
+
+  @keyframes borderGlow {
+    0%, 100% { border-color: rgba(125, 211, 255, 0.25); box-shadow: 0 0 10px rgba(91, 184, 255, 0.06), inset 0 0 10px rgba(91, 184, 255, 0.02); }
+    50% { border-color: rgba(125, 211, 255, 0.45); box-shadow: 0 0 16px rgba(125, 211, 255, 0.12), inset 0 0 14px rgba(91, 184, 255, 0.04); }
   }
 
   .challenge-link {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 6px 14px;
-    background: rgba(51, 156, 255, 0.04);
-    border: 1px solid rgba(51, 156, 255, 0.12);
-    border-radius: 10px;
-    text-decoration: none;
-    position: relative;
-    overflow: hidden;
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px;
+    background: rgba(91, 184, 255, 0.06);
+    border: 1px solid rgba(125, 211, 255, 0.3);
+    border-radius: 10px; text-decoration: none;
+    position: relative; overflow: hidden;
+    transition: all 0.3s ease;
+    animation: borderGlow 3s ease-in-out infinite;
+  }
+
+  .challenge-link:hover {
+    border-color: var(--neon);
+    background: rgba(125, 211, 255, 0.12);
+    box-shadow: 0 0 24px rgba(125, 211, 255, 0.25), 0 0 48px rgba(91, 184, 255, 0.12), inset 0 0 20px rgba(91, 184, 255, 0.06);
+    transform: translateY(-2px);
   }
 
   .challenge-num {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--blue);
-    min-width: 32px;
-    text-align: center;
-    opacity: 0.6;
+    font-size: 20px; font-weight: 700; color: var(--neon);
+    min-width: 32px; text-align: center;
+    text-shadow: 0 0 10px var(--neon-glow); opacity: 0.85;
   }
 
   .challenge-info { flex: 1; }
 
   .challenge-name {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    font-weight: 700;
-    color: #fff;
-    letter-spacing: 1px;
+    font-size: 12px; font-weight: 700; color: var(--neon);
+    letter-spacing: 1px; text-shadow: 0 0 8px rgba(125, 211, 255, 0.3);
+  }
+
+  .challenge-desc {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px; font-weight: 700;
+    color: rgba(125, 211, 255, 0.4); letter-spacing: 1px; margin-top: 3px;
   }
 
   .challenge-arrow {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 22px;
-    font-weight: 700;
-    color: #5bb8ff;
+    font-size: 22px; font-weight: 700; color: var(--neon);
+    text-shadow: 0 0 6px var(--neon-glow);
   }
 
-  /* ── CTA BUTTON ── */
-  .cta-wrap {
-    margin-top: 10px;
-    position: relative;
-    z-index: 10;
+  /* ── STICKY FOOTER BAR ── */
+  .sticky-footer {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 150;
+    background: #080c18;
+    padding: 16px 0 14px;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
   }
 
-  .cta-btn {
+  .sticky-footer-inner {
+    width: 90%;
+    max-width: 320px;
+    pointer-events: auto;
+  }
+
+  .sticky-link {
     display: block;
     width: 100%;
-    padding: 7px 12px;
-    background: transparent;
-    border: 1px solid rgba(51, 156, 255, 0.2);
-    border-radius: 6px;
-    color: var(--blue-bright);
+    padding: 10px 12px;
+    background: rgba(125, 211, 255, 0.1);
+    border: 1.5px solid rgba(125, 211, 255, 0.5);
+    border-radius: 8px;
+    color: var(--neon);
     font-family: 'JetBrains Mono', monospace;
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    text-decoration: none;
-    text-align: center;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    text-decoration: none; text-align: center;
     cursor: pointer;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 8px rgba(125, 211, 255, 0.4);
+    box-shadow: 0 0 12px rgba(125, 211, 255, 0.1);
+  }
+
+  .sticky-link:hover {
+    color: #fff;
+    border-color: var(--neon);
+    background: rgba(125, 211, 255, 0.18);
+    box-shadow: 0 0 24px rgba(125, 211, 255, 0.3), 0 0 48px rgba(91, 184, 255, 0.12);
   }
 
   /* ── PARTICLES ── */
   .particle {
-    position: fixed;
-    width: 2px; height: 2px;
-    background: var(--blue-bright);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 5;
-    opacity: 0;
+    position: fixed; width: 2px; height: 2px;
+    background: var(--blue-bright); border-radius: 50%;
+    pointer-events: none; z-index: 5; opacity: 0;
     animation: float linear infinite;
   }
 
@@ -338,9 +314,6 @@
         <div class="cd-label">Sec</div>
       </div>
     </div>
-    <div class="cta-wrap">
-      <a href="https://form.gov.sg/69a8e2c13646169c05291a98" target="_blank" class="cta-btn">REGISTER NOW →</a>
-    </div>
   </div>
 
   <!-- Key Dates -->
@@ -358,9 +331,9 @@
     </div>
   </div>
 
-  <!-- Challenges -->
+  <!-- Puzzles -->
   <div class="card">
-    <div class="section-label">> PUZZLES</div>
+    <div class="section-label">> SOLVE_TO_REGISTER</div>
     <div class="challenge-list">
 
       <a href="2.html" class="challenge-link">
@@ -382,7 +355,13 @@
     </div>
   </div>
 
-  <!-- CTA removed from here, now inside countdown card -->
+</div>
+
+<!-- Sticky footer register bar -->
+<div class="sticky-footer">
+  <div class="sticky-footer-inner">
+    <a href="https://form.gov.sg/69a8e2c13646169c05291a98" target="_blank" class="sticky-link">REGISTER NOW →</a>
+  </div>
 </div>
 
 <script>
