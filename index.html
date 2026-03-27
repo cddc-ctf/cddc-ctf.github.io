@@ -157,6 +157,11 @@
     font-size: 11px; font-weight: 700; color: #fff; letter-spacing: 1px;
   }
 
+  .card.puzzles-card {
+    border-color: rgba(125, 211, 255, 0.45);
+    box-shadow: 0 0 15px rgba(125, 211, 255, 0.25), 0 0 40px rgba(125, 211, 255, 0.15), 0 0 80px rgba(91, 184, 255, 0.08), 0 20px 60px rgba(0,0,0,0.5);
+  }
+
   /* ── CHALLENGES ── */
   .section-label {
     font-family: 'JetBrains Mono', monospace;
@@ -221,7 +226,7 @@
   .sticky-footer {
     position: fixed;
     bottom: 0; left: 0; right: 0;
-    z-index: 150;
+    z-index: 200;
     background: #080c18;
     padding: 16px 0 14px;
     display: flex;
@@ -331,8 +336,7 @@
     </div>
   </div>
 
-  <!-- Puzzles -->
-  <div class="card">
+  <div class="card puzzles-card">
     <div class="section-label">> PUZZLES</div>
     <div class="challenge-list">
 
