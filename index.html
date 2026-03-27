@@ -226,12 +226,15 @@
   .sticky-footer {
     position: fixed;
     bottom: 0; left: 0; right: 0;
-    z-index: 200;
+    z-index: 9999;
     background: #080c18;
-    padding: 16px 0 14px;
+    padding: 16px 0 max(14px, env(safe-area-inset-bottom));
     display: flex;
     justify-content: center;
     pointer-events: none;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
   }
 
   .sticky-footer-inner {
