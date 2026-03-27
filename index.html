@@ -195,11 +195,12 @@
     transform: translateY(-2px);
   }
 
-  .challenge-num {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 20px; font-weight: 700; color: var(--neon);
-    min-width: 32px; text-align: center;
-    text-shadow: 0 0 10px var(--neon-glow); opacity: 0.85;
+  .challenge-dot {
+    width: 8px; height: 8px;
+    min-width: 8px;
+    border-radius: 50%;
+    background: var(--neon);
+    box-shadow: 0 0 8px var(--neon-glow), 0 0 16px rgba(125, 211, 255, 0.3);
   }
 
   .challenge-info { flex: 1; }
@@ -344,7 +345,7 @@
     <div class="challenge-list">
 
       <a href="2.html" class="challenge-link">
-        <div class="challenge-num">02</div>
+        <div class="challenge-dot"></div>
         <div class="challenge-info">
           <div class="challenge-name">SIGNAL RECOVERY</div>
         </div>
@@ -352,7 +353,7 @@
       </a>
 
       <a href="1.html" class="challenge-link">
-        <div class="challenge-num">01</div>
+        <div class="challenge-dot"></div>
         <div class="challenge-info">
           <div class="challenge-name">TEST LOGIN</div>
         </div>
