@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cipher Wheel</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KFH2MB0EGV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-KFH2MB0EGV');
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--blue:#339cff;--blue-bright:#5bb8ff;--blue-dark:#1a7ae6}
+  body{min-height:100vh;background:#080c18;font-family:'Inter',sans-serif;display:flex;align-items:flex-start;justify-content:center;overflow-x:hidden;position:relative;padding-top:20px}
+  body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background-image:linear-gradient(rgba(51,156,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(51,156,255,0.03) 1px,transparent 1px);background-size:40px 40px;animation:gridMove 20s linear infinite;z-index:0}
+  @keyframes gridMove{0%{transform:translate(0,0)}100%{transform:translate(40px,40px)}}
+  body::after{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.1) 2px,rgba(0,0,0,0.1) 4px);pointer-events:none;z-index:100}
+  .container{position:relative;z-index:10;width:94%;max-width:320px;padding:16px}
+  .terminal-header{font-family:'JetBrains Mono',monospace;color:var(--blue);font-size:11px;margin-bottom:8px;opacity:0.8;letter-spacing:1px;font-weight:700}
+  .card{background:rgba(10,16,35,0.9);border:1px solid rgba(51,156,255,0.2);border-radius:12px;padding:18px;backdrop-filter:blur(20px);box-shadow:0 0 40px rgba(51,156,255,0.06),0 20px 60px rgba(0,0,0,0.5)}
+
+  .cipher-display{background:rgba(0,0,0,0.6);border:1px solid rgba(51,156,255,0.15);border-radius:8px;padding:12px;margin-bottom:14px}
+  .cipher-label{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:rgba(91,184,255,0.4);letter-spacing:1px;margin-bottom:8px}
+  .encrypted-msg{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:rgba(255,80,80,0.9);letter-spacing:4px;text-align:center;text-shadow:0 0 10px rgba(255,80,80,0.3);word-break:break-all;line-height:1.6}
+
+  .info-box{background:rgba(51,156,255,0.04);border:1px solid rgba(51,156,255,0.1);border-radius:8px;padding:10px 12px;margin-bottom:14px}
+  .info-text{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:rgba(91,184,255,0.8);line-height:1.6;letter-spacing:0.5px;text-align:center}
+  .info-text strong{color:rgba(91,184,255,0.8)}
+
+  /* ── Compact strip wheel ── */
+  .strip-section{margin-bottom:14px}
+  .strip-label{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:rgba(91,184,255,0.4);letter-spacing:1px;margin-bottom:8px}
+
+  .strip-wrap{position:relative;overflow:hidden;border-radius:8px;border:1px solid rgba(51,156,255,0.15);background:rgba(0,0,0,0.5);padding:0;user-select:none;touch-action:none}
+
+  .strip-row{display:flex;height:32px;align-items:center;position:relative}
+  .strip-row+.strip-row{border-top:1px solid rgba(51,156,255,0.1)}
+
+  .strip-row-label{position:absolute;left:0;top:0;bottom:0;width:36px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;letter-spacing:1px;z-index:3;background:rgba(0,0,0,0.7);border-right:1px solid rgba(51,156,255,0.1)}
+  .strip-row-label.plain-label{color:rgba(91,184,255,0.5)}
+  .strip-row-label.cipher-label-tag{color:rgba(255,80,80,0.5)}
+
+  .strip-track{display:flex;margin-left:36px;position:relative;transition:transform 0.12s ease-out}
+
+  .strip-cell{min-width:28px;height:32px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;flex-shrink:0}
+  .plain-cell{color:rgba(91,184,255,0.6)}
+  .plain-cell.active{color:#fff;background:rgba(91,184,255,0.15);text-shadow:0 0 8px rgba(91,184,255,0.5)}
+  .cipher-cell{color:rgba(255,80,80,0.5)}
+  .cipher-cell.active{color:rgba(255,80,80,0.95);background:rgba(255,80,80,0.08);text-shadow:0 0 8px rgba(255,80,80,0.4)}
+
+  .strip-pointer{position:absolute;top:-1px;left:176px;width:28px;height:calc(100% + 2px);border:2px solid rgba(91,184,255,0.5);border-radius:4px;z-index:4;pointer-events:none;box-shadow:0 0 10px rgba(91,184,255,0.15)}
+
+  .shift-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:10px}
+  .shift-val{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:#fff;min-width:60px;text-align:center}
+  .shift-sub{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:rgba(91,184,255,0.4);letter-spacing:1px;text-align:center;margin-top:2px}
+  .ctrl-btn{width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:rgba(51,156,255,0.08);border:1px solid rgba(51,156,255,0.25);border-radius:8px;color:var(--blue-bright);font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;cursor:pointer;transition:all 0.2s;user-select:none}
+  .ctrl-btn:hover{background:rgba(51,156,255,0.15);border-color:var(--blue-bright)}
+  .ctrl-btn:active{transform:scale(0.92)}
+
+  .input-group{margin-bottom:12px}
+  .input-group label{display:block;font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(91,184,255,0.7);font-weight:700;margin-bottom:6px;letter-spacing:1px;text-transform:uppercase}
+  .input-group input{width:100%;padding:10px 14px;background:rgba(51,156,255,0.06);border:1px solid rgba(51,156,255,0.2);border-radius:8px;color:#fff;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;outline:none;transition:all 0.3s}
+  .input-group input:focus{border-color:var(--blue-bright);box-shadow:0 0 15px rgba(51,156,255,0.15);background:rgba(51,156,255,0.1)}
+  .input-group input::placeholder{color:rgba(255,255,255,0.25)}
+  .btn{width:100%;padding:10px;background:linear-gradient(135deg,var(--blue-bright),var(--blue-dark));border:none;border-radius:8px;color:#fff;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all 0.3s;text-transform:uppercase;margin-top:4px}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(51,156,255,0.35)}
+  .btn:active{transform:translateY(0)}
+  .status{margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;text-align:center;min-height:16px;transition:all 0.3s}
+  .status.error{color:#ff5555}
+  .status.success{color:var(--blue-bright)}
+  .attempts-left{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:rgba(255,255,255,0.25);text-align:right;margin-top:4px}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  .shake{animation:shake 0.3s ease}
+
+  .overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.92);z-index:200;align-items:center;justify-content:flex-start;flex-direction:column;padding:20px;padding-top:20px;text-align:center;animation:fadeIn 0.5s ease}
+  .overlay.show{display:flex}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .overlay .flag-box{background:rgba(51,156,255,0.08);border:2px solid var(--blue-bright);border-radius:16px;padding:24px 20px;max-width:320px;width:90%;animation:scaleIn 0.5s ease}
+  @keyframes scaleIn{from{transform:scale(0.8);opacity:0}to{transform:scale(1);opacity:1}}
+  .overlay .flag-box h2{font-family:'JetBrains Mono',monospace;color:var(--blue-bright);font-size:22px;font-weight:700;margin-bottom:12px;letter-spacing:2px}
+  .overlay .flag-box .flag{font-family:'JetBrains Mono',monospace;color:#fff;font-size:15px;font-weight:700;background:rgba(0,0,0,0.4);padding:12px 16px;border-radius:8px;margin:16px 0;word-break:break-all}
+  .overlay .flag-box p{color:rgba(255,255,255,0.65);font-size:14px;font-weight:700;line-height:1.6;margin-top:16px}
+  .overlay .flag-box a{display:inline-block;margin-top:20px;padding:12px 28px;background:var(--blue-bright);color:#0a0e17;text-decoration:none;border-radius:8px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;letter-spacing:1px}
+  .edu-box{background:rgba(51,156,255,0.04);border:1px solid rgba(51,156,255,0.1);border-radius:8px;padding:12px;margin:16px 0 0}
+  .edu-title{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--blue-bright);letter-spacing:1px;margin-bottom:6px}
+  .edu-text{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:400;color:rgba(255,255,255,0.55);line-height:1.7}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="terminal-header">// ROT_BREAKER v68.83.84.65</div>
+  <div class="card" id="mainCard">
+
+    <div class="cipher-display">
+      <div class="cipher-label">> INTERCEPTED_TRANSMISSION</div>
+      <div class="encrypted-msg" id="encMsg"></div>
+    </div>
+
+    <div class="info-box">
+      <div class="info-text">
+        Every letter has been "rotated" (ROT) by an unknown amount. Slide the strip to crack it.
+      </div>
+    </div>
+
+    <div class="strip-section">
+      <div class="strip-label">> CIPHER_STRIP</div>
+      <div class="strip-wrap" id="stripWrap">
+        <div class="strip-pointer" id="stripPointer"></div>
+        <div class="strip-row">
+          <div class="strip-row-label cipher-label-tag">ENC</div>
+          <div class="strip-track" id="cipherTrack"></div>
+        </div>
+        <div class="strip-row">
+          <div class="strip-row-label plain-label">ABC</div>
+          <div class="strip-track" id="plainTrack"></div>
+        </div>
+      </div>
+      <div class="shift-row">
+        <div class="ctrl-btn" id="btnLeft">◀</div>
+        <div>
+          <div class="shift-val">ROT: <span id="shiftVal">0</span></div>
+          <div class="shift-sub">F → <span id="mapsTo">F</span></div>
+        </div>
+        <div class="ctrl-btn" id="btnRight">▶</div>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>Source</label>
+      <input type="text" value="agent_03" disabled style="opacity:0.5;cursor:not-allowed">
+    </div>
+    <div class="input-group">
+      <label>Message</label>
+      <input type="text" id="answer" placeholder="Slide the strip..." autocomplete="off" readonly style="cursor:default">
+    </div>
+    <button class="btn" onclick="checkAnswer()">Verify</button>
+    <div class="status" id="status"></div>
+    <div class="attempts-left" id="attempts"></div>
+  </div>
+</div>
+
+<div class="overlay" id="successOverlay">
+  <div class="flag-box">
+    <h2>MESSAGE RECOVERED</h2>
+    <div class="flag" id="flagDisplay"></div>
+    <p>The cipher broke before you did. Ready to crack something harder?</p>
+    <p style="color:rgba(255,255,255,0.45);font-size:12px;font-weight:400;margin-top:12px;">
+      CDDC is a <strong style="color:var(--blue-bright);font-weight:700;">free</strong> cybersecurity competition <strong style="color:var(--blue-bright);font-weight:700;">with attractive prizes</strong>, open to students as part of DSTA BrainHack.
+    </p>
+    <a href="https://form.gov.sg/69a8e2c13646169c05291a98" target="_blank">REGISTER FOR CDDC →</a>
+  </div>
+</div>
+
+<script>
+const ALPHA='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const CELL_W=28;
+
+const _plain=[83,84,82,79,78,71];
+const _flag=[67,68,68,67,50,48,50,54,123,67,52,51,53,52,82,125];
+const SHIFT_KEY=_plain[1]-_plain[4]+7;
+
+const plaintext=_plain.map(c=>String.fromCharCode(c)).join('');
+const ciphertext=plaintext.split('').map(ch=>{
+  const i=ALPHA.indexOf(ch);
+  if(i===-1)return ch;
+  return ALPHA[(i+SHIFT_KEY)%26];
+}).join('');
+
+document.getElementById('encMsg').textContent=ciphertext;
+
+// Build strip cells — triple the alphabet for seamless scrolling
+const plainTrack=document.getElementById('plainTrack');
+const cipherTrack=document.getElementById('cipherTrack');
+
+function buildTrack(track,cls){
+  const cells=[];
+  for(let rep=0;rep<3;rep++){
+    for(let i=0;i<26;i++){
+      const d=document.createElement('div');
+      d.className='strip-cell '+cls;
+      d.textContent=ALPHA[i];
+      track.appendChild(d);
+      cells.push(d);
+    }
+  }
+  return cells;
+}
+
+const plainCells=buildTrack(plainTrack,'plain-cell');
+const cipherCells=buildTrack(cipherTrack,'cipher-cell');
+
+let currentShift=0;
+
+function updateStrip(){
+  // Cipher row stays fixed, plain row shifts
+  cipherTrack.style.transform=`translateX(${-26*CELL_W}px)`;
+  plainTrack.style.transform=`translateX(${(-26+currentShift)*CELL_W}px)`;
+
+  document.getElementById('shiftVal').textContent=currentShift;
+  document.getElementById('mapsTo').textContent=ALPHA[(5+currentShift)%26];
+
+  // Highlight cells
+  plainCells.forEach(c=>c.classList.remove('active'));
+  cipherCells.forEach(c=>c.classList.remove('active'));
+
+  // Highlight F on the cipher row (index 5 in middle repeat = 26+5)
+  cipherCells[26+5].classList.add('active');
+  // Plain row: the cell visually aligned under F after shift
+  const plainIdx=26+5-currentShift;
+  if(plainCells[plainIdx>=0?plainIdx:plainIdx+26])
+    plainCells[plainIdx>=0?plainIdx:plainIdx+26].classList.add('active');
+
+  // Auto-populate decrypted text
+  const decrypted=ciphertext.split('').map(ch=>{
+    const i=ALPHA.indexOf(ch);
+    if(i===-1)return ch;
+    return ALPHA[(i-currentShift+26)%26];
+  }).join('');
+  document.getElementById('answer').value=decrypted;
+}
+
+updateStrip();
+
+function setShift(s){
+  currentShift=((s%26)+26)%26;
+  updateStrip();
+}
+
+document.getElementById('btnLeft').addEventListener('click',()=>setShift(currentShift-1));
+document.getElementById('btnRight').addEventListener('click',()=>setShift(currentShift+1));
+
+// Drag on strip
+const stripWrap=document.getElementById('stripWrap');
+let dragging=false,dragStartX=0,dragStartShift=0;
+
+function startDrag(x){dragging=true;dragStartX=x;dragStartShift=currentShift}
+function moveDrag(x){
+  if(!dragging)return;
+  const dx=x-dragStartX;
+  const steps=Math.round(dx/CELL_W);
+  setShift(dragStartShift+steps);
+}
+function endDrag(){dragging=false}
+
+stripWrap.addEventListener('mousedown',e=>{startDrag(e.clientX);e.preventDefault()});
+document.addEventListener('mousemove',e=>{moveDrag(e.clientX)});
+document.addEventListener('mouseup',endDrag);
+stripWrap.addEventListener('touchstart',e=>{startDrag(e.touches[0].clientX)},{passive:true});
+document.addEventListener('touchmove',e=>{moveDrag(e.touches[0].clientX)},{passive:true});
+document.addEventListener('touchend',endDrag);
+
+// Keyboard
+document.addEventListener('keydown',e=>{
+  if(document.activeElement.tagName==='INPUT')return;
+  if(e.key==='ArrowLeft')setShift(currentShift-1);
+  if(e.key==='ArrowRight')setShift(currentShift+1);
+});
+
+// Check answer
+let attempts=0;
+const hints=[
+  "Hint: Try sliding through all 25 positions — that's brute force!",
+  "Hint: The answer is a common English word.",
+  "Hint: Look for a 6-letter word. Slide until it reads as English.",
+  "Hint: The word starts with S.",
+  "Hint: Think about what a good password should be..."
+];
+
+function checkAnswer(){
+  const input=document.getElementById('answer').value.trim().toUpperCase();
+  const status=document.getElementById('status');
+  const card=document.getElementById('mainCard');
+
+  if(input===plaintext){
+    status.className='status success';
+    status.textContent='● Message decrypted successfully';
+    document.getElementById('flagDisplay').textContent=_flag.map(c=>String.fromCharCode(c)).join('');
+    setTimeout(()=>document.getElementById('successOverlay').classList.add('show'),600);
+    return;
+  }
+
+  attempts++;
+  card.classList.remove('shake');
+  void card.offsetWidth;
+  card.classList.add('shake');
+  status.className='status error';
+  status.textContent='✗ INCORRECT — '+(attempts<=hints.length?hints[attempts-1]:"Keep sliding! The answer is a real English word.");
+  document.getElementById('attempts').textContent='Attempts: '+attempts;
+  document.getElementById('answer').value='';
+}
+
+document.getElementById('answer').addEventListener('keydown',function(e){if(e.key==='Enter')checkAnswer()});
+</script>
+</body>
+</html>
