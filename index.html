@@ -97,8 +97,16 @@
 
   .title-sub {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 9px; font-weight: 700;
+    font-size: 14px; font-weight: 700;
     color: #fff; letter-spacing: 2px;
+  }
+
+  .title-tagline {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px; font-weight: 700;
+    color: var(--muted); letter-spacing: 1.5px;
+    margin-top: 6px;
+    opacity: 0.7;
   }
 
   .countdown-label {
@@ -147,6 +155,18 @@
   .event-name {
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: 1px;
+    display: flex; flex-direction: column; gap: 3px;
+  }
+
+  .event-tag {
+    font-size: 7px;
+    color: rgba(255,255,255,0.6);
+    background: rgba(91, 184, 255, 0.12);
+    border: 1px solid rgba(91, 184, 255, 0.25);
+    padding: 1px 5px;
+    border-radius: 3px;
+    letter-spacing: 1px;
+    width: fit-content;
   }
 
   .event-date {
@@ -217,6 +237,22 @@
     font-family: 'JetBrains Mono', monospace;
     font-size: 22px; font-weight: 700; color: var(--neon);
     text-shadow: 0 0 6px var(--neon-glow);
+  }
+
+  .challenge-new {
+    position: relative;
+    z-index: 101;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px; font-weight: 700;
+    color: #fff;
+    background: rgba(91, 184, 255, 0.15);
+    border: 1px solid rgba(125, 211, 255, 0.4);
+    padding: 2px 6px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    box-shadow: 0 0 8px var(--neon-glow);
+    flex-shrink: 0;
   }
 
   /* ── LOCKED CHALLENGE ── */
@@ -318,7 +354,8 @@
 
   <div class="card" style="text-align: center;">
     <div class="title-section">
-      <div class="title-sub">CYBER DEFENDERS DISCOVERY CAMP</div>
+      <div class="title-sub">CYBER DEFENDERS<br>DISCOVERY CAMP</div>
+      <div class="title-tagline">A FREE CYBERSECURITY CTF FOR STUDENTS</div>
     </div>
   </div>
 
@@ -351,11 +388,11 @@
     <div class="event-label">> KEY_DATES</div>
     <div class="event-list">
       <div class="event-row">
-        <div class="event-name">QUALIFIERS</div>
+        <div class="event-name">QUALIFIERS <span class="event-tag">VIRTUAL</span></div>
         <div class="event-date">16 – 17 MAY 2026</div>
       </div>
       <div class="event-row">
-        <div class="event-name">FINALS</div>
+        <div class="event-name">FINALS <span class="event-tag">PHYSICAL</span></div>
         <div class="event-date">10 – 11 JUN 2026</div>
       </div>
     </div>
@@ -364,6 +401,15 @@
   <div class="card puzzles-card">
     <div class="section-label">> PUZZLES</div>
     <div class="challenge-list">
+
+      <a href="3.html" class="challenge-link">
+        <div class="challenge-dot"></div>
+        <div class="challenge-info">
+          <div class="challenge-name">CIPHER WHEEL</div>
+        </div>
+        <div class="challenge-new">NEW</div>
+        <div class="challenge-arrow">›</div>
+      </a>
 
       <a href="2.html" class="challenge-link">
         <div class="challenge-dot"></div>
@@ -384,7 +430,7 @@
       <div class="challenge-link locked">
         <div class="challenge-dot"></div>
         <div class="challenge-info">
-          <div class="challenge-name">COMING SOON</div>
+          <div class="challenge-name">MORE COMING SOON...</div>
         </div>
         <div class="challenge-arrow">›</div>
       </div>
