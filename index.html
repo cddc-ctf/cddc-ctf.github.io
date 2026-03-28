@@ -93,7 +93,6 @@
     margin-bottom: 12px;
   }
 
-  /* ── TITLE ── */
   .title-section { text-align: center; padding: 4px 0; }
 
   .title-sub {
@@ -102,7 +101,6 @@
     color: #fff; letter-spacing: 2px;
   }
 
-  /* ── COUNTDOWN ── */
   .countdown-label {
     font-family: 'JetBrains Mono', monospace;
     font-size: 9px; font-weight: 700;
@@ -132,7 +130,6 @@
     letter-spacing: 2px; margin-top: 6px; text-transform: uppercase;
   }
 
-  /* ── KEY DATES ── */
   .event-label {
     font-family: 'JetBrains Mono', monospace;
     font-size: 9px; font-weight: 700;
@@ -162,7 +159,6 @@
     box-shadow: 0 0 15px rgba(125, 211, 255, 0.25), 0 0 40px rgba(125, 211, 255, 0.15), 0 0 80px rgba(91, 184, 255, 0.08), 0 20px 60px rgba(0,0,0,0.5);
   }
 
-  /* ── CHALLENGES ── */
   .section-label {
     font-family: 'JetBrains Mono', monospace;
     font-size: 9px; font-weight: 700;
@@ -179,7 +175,7 @@
 
   .challenge-link {
     display: flex; align-items: center; gap: 12px;
-    padding: 12px 14px;
+    padding: 2px 14px;
     background: rgba(91, 184, 255, 0.06);
     border: 1px solid rgba(125, 211, 255, 0.3);
     border-radius: 10px; text-decoration: none;
@@ -223,7 +219,36 @@
     text-shadow: 0 0 6px var(--neon-glow);
   }
 
-  /* ── STICKY FOOTER BAR ── */
+  /* ── LOCKED CHALLENGE ── */
+  .challenge-link.locked {
+    animation: none;
+    border-color: rgba(51, 156, 255, 0.1);
+    background: rgba(51, 156, 255, 0.02);
+    cursor: default;
+    pointer-events: none;
+    opacity: 0.55;
+  }
+  .challenge-link.locked .challenge-dot {
+    background: rgba(91, 184, 255, 0.2);
+    box-shadow: none;
+  }
+  .challenge-link.locked .challenge-name {
+    color: rgba(255,255,255,0.85);
+  }
+  .challenge-link.locked .challenge-arrow {
+    color: rgba(125, 211, 255, 0.2);
+    text-shadow: none;
+  }
+
+  .more-hint {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px; font-weight: 700;
+    color: rgba(125, 211, 255, 0.25);
+    letter-spacing: 1px;
+    text-align: center;
+    margin-top: 10px;
+  }
+
   .sticky-footer {
     position: fixed;
     bottom: 0; left: 0; right: 0;
@@ -269,7 +294,6 @@
     box-shadow: 0 0 24px rgba(125, 211, 255, 0.3), 0 0 48px rgba(91, 184, 255, 0.12);
   }
 
-  /* ── PARTICLES ── */
   .particle {
     position: fixed; width: 2px; height: 2px;
     background: var(--blue-bright); border-radius: 50%;
@@ -292,14 +316,12 @@
 <div class="container">
   <div class="terminal-header">// CDDC_PORTAL v68.83.84.65</div>
 
-  <!-- Title -->
   <div class="card" style="text-align: center;">
     <div class="title-section">
       <div class="title-sub">CYBER DEFENDERS DISCOVERY CAMP</div>
     </div>
   </div>
 
-  <!-- Countdown -->
   <div class="card">
     <div class="countdown-label">> REGISTRATION_CLOSES</div>
     <div class="countdown-row">
@@ -325,7 +347,6 @@
     </div>
   </div>
 
-  <!-- Key Dates -->
   <div class="card">
     <div class="event-label">> KEY_DATES</div>
     <div class="event-list">
@@ -360,12 +381,19 @@
         <div class="challenge-arrow">›</div>
       </a>
 
+      <div class="challenge-link locked">
+        <div class="challenge-dot"></div>
+        <div class="challenge-info">
+          <div class="challenge-name">COMING SOON</div>
+        </div>
+        <div class="challenge-arrow">›</div>
+      </div>
+
     </div>
   </div>
 
 </div>
 
-<!-- Sticky footer register bar -->
 <div class="sticky-footer">
   <div class="sticky-footer-inner">
     <a href="https://form.gov.sg/69a8e2c13646169c05291a98" target="_blank" class="sticky-link">REGISTER NOW →</a>
