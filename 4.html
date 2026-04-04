@@ -96,7 +96,7 @@
     </div>
 
     <div class="converter" id="converter">
-      <div class="conv-label">> PACKET_DECODER</div>
+      <div class="conv-label">> PACKET_ANALYSER</div>
       <div class="conv-row">
         <div class="conv-block">
           <div class="conv-val" id="convBin">--------</div>
@@ -129,10 +129,10 @@
       <input type="text" value="agent_04" disabled style="opacity:0.5;cursor:not-allowed">
     </div>
     <div class="input-group">
-      <label>Decoded Word</label>
-      <input type="text" id="answer" placeholder="Enter decoded word" autocomplete="off">
+      <label>Recovered Word</label>
+      <input type="text" id="answer" placeholder="Enter recovered word" autocomplete="off">
     </div>
-    <button class="btn" onclick="checkAnswer()">Submit</button>
+    <button class="btn" onclick="checkAnswer()">Check</button>
     <div class="status" id="status"></div>
     <div class="attempts-left" id="attempts"></div>
   </div>
@@ -140,7 +140,7 @@
 
 <div class="overlay" id="successOverlay">
   <div class="flag-box">
-    <h2>STREAM DECODED</h2>
+    <h2>DATA RECOVERED</h2>
     <div class="flag" id="flagDisplay"></div>
     <p>You read every bit. The next one won't sit still.</p>
     <p style="color:rgba(255,255,255,0.45);font-size:12px;font-weight:400;margin-top:12px;">
@@ -278,7 +278,7 @@ function selectPacket(idx){
 let attempts=0;
 const hints=[
   "Hint: Each packet is 8 bits = 1 byte = 1 ASCII character.",
-  "Hint: Click each packet to see its decoded letter.",
+  "Hint: Click each packet to see its represented letter.",
   "Hint: Read the characters from P0 to P4 in order.",
   "Hint: The word starts with B and has 5 letters.",
   "Hint: 8 bits make one of these..."
@@ -291,7 +291,7 @@ function checkAnswer(){
 
   if(input===answer){
     status.className='status success';
-    status.textContent='\u25CF Packets decoded successfully';
+    status.textContent='\u25CF Packets recovered successfully';
     clearInterval(noiseInterval);
     // Stop noise, lock bits
     bitEls.forEach((bits,pIdx)=>{
