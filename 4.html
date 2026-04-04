@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Binary Stream</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KFH2MB0EGV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-KFH2MB0EGV');
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--blue:#339cff;--blue-bright:#5bb8ff;--blue-dark:#1a7ae6}
+  body{min-height:100vh;background:#080c18;font-family:'Inter',sans-serif;display:flex;align-items:flex-start;justify-content:center;overflow-x:hidden;position:relative;padding-top:20px}
+  body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background-image:linear-gradient(rgba(51,156,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(51,156,255,0.03) 1px,transparent 1px);background-size:40px 40px;animation:gridMove 20s linear infinite;z-index:0}
+  @keyframes gridMove{0%{transform:translate(0,0)}100%{transform:translate(40px,40px)}}
+  body::after{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.1) 2px,rgba(0,0,0,0.1) 4px);pointer-events:none;z-index:100}
+  .container{position:relative;z-index:10;width:94%;max-width:320px;padding:16px}
+  .terminal-header{font-family:'JetBrains Mono',monospace;color:var(--blue);font-size:11px;margin-bottom:8px;opacity:0.8;letter-spacing:1px;font-weight:700}
+  .card{background:rgba(10,16,35,0.9);border:1px solid rgba(51,156,255,0.2);border-radius:12px;padding:18px;backdrop-filter:blur(20px);box-shadow:0 0 40px rgba(51,156,255,0.06),0 20px 60px rgba(0,0,0,0.5)}
+
+  .stream-display{background:rgba(0,0,0,0.6);border:1px solid rgba(51,156,255,0.15);border-radius:8px;padding:12px;margin-bottom:14px}
+  .stream-label{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:rgba(91,184,255,0.6);letter-spacing:1px;margin-bottom:10px}
+
+  .packet-row{display:flex;align-items:center;gap:6px;padding:8px 10px;cursor:pointer;border-radius:6px;transition:background 0.2s}
+  .packet-row:hover{background:rgba(51,156,255,0.05)}
+  .packet-row+.packet-row{border-top:1px solid rgba(51,156,255,0.05)}
+  .packet-row.selected{background:rgba(91,184,255,0.12);outline:2px solid rgba(91,184,255,0.7);outline-offset:2px;box-shadow:0 0 20px rgba(91,184,255,0.4),0 0 40px rgba(91,184,255,0.15),inset 0 0 12px rgba(91,184,255,0.08)}
+
+  .pkt-idx{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:rgba(91,184,255,0.6);letter-spacing:1px;min-width:20px}
+
+  .bit-group{display:flex;gap:3px;flex:1;justify-content:center}
+  .bit{width:19px;height:26px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;border-radius:4px;transition:all 0.15s}
+  .bit.off{color:rgba(255,255,255,0.45);background:rgba(51,156,255,0.02)}
+  .bit.on{color:#fff;background:rgba(91,184,255,0.15);text-shadow:0 0 6px rgba(91,184,255,0.5)}
+  .bit.noise{color:rgba(255,80,80,0.4);background:rgba(255,80,80,0.03)}
+
+  .pkt-status{font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;color:rgba(91,184,255,0.2);min-width:12px;text-align:right}
+
+  /* Converter panel */
+  .converter{background:rgba(0,0,0,0.4);border:1px solid rgba(51,156,255,0.12);border-radius:8px;padding:10px 12px;margin-bottom:14px}
+  .conv-label{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:rgba(91,184,255,0.6);letter-spacing:1px;margin-bottom:8px}
+  .conv-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .conv-block{display:flex;flex-direction:column;align-items:center;gap:2px}
+  .conv-val{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:#fff;text-shadow:0 0 8px rgba(91,184,255,0.3);min-height:24px}
+  .conv-sub{font-family:'JetBrains Mono',monospace;font-size:7px;font-weight:700;color:rgba(91,184,255,0.55);letter-spacing:1px;text-transform:uppercase}
+  .conv-arrow{font-family:'JetBrains Mono',monospace;font-size:14px;color:rgba(91,184,255,0.4)}
+  .conv-val.char{font-size:24px;color:var(--blue-bright);text-shadow:0 0 12px rgba(91,184,255,0.5)}
+  .conv-val.char.corrupted{color:rgba(255,80,80,0.9);text-shadow:0 0 12px rgba(255,80,80,0.4)}
+  .conv-val .bit-r{color:rgba(255,80,80,0.9)}
+  .conv-hint{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:rgba(91,184,255,0.8);text-align:center;margin-top:8px;letter-spacing:0.5px}
+  .tap-hint{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:rgba(91,184,255,0.6);text-align:center;padding:8px;margin-bottom:14px;letter-spacing:1px;border:1px dashed rgba(91,184,255,0.25);border-radius:6px;background:rgba(91,184,255,0.04)}
+
+  .info-box{background:rgba(51,156,255,0.04);border:1px solid rgba(51,156,255,0.1);border-radius:8px;padding:10px 12px;margin-bottom:14px}
+  .info-text{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:rgba(91,184,255,0.8);line-height:1.6;letter-spacing:0.5px;text-align:center}
+
+  .input-group{margin-bottom:12px}
+  .input-group label{display:block;font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(91,184,255,0.7);font-weight:700;margin-bottom:6px;letter-spacing:1px;text-transform:uppercase}
+  .input-group input{width:100%;padding:10px 14px;background:rgba(51,156,255,0.06);border:1px solid rgba(51,156,255,0.2);border-radius:8px;color:#fff;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;outline:none;transition:all 0.3s}
+  .input-group input:focus{border-color:var(--blue-bright);box-shadow:0 0 15px rgba(51,156,255,0.15);background:rgba(51,156,255,0.1)}
+  .input-group input::placeholder{color:rgba(255,255,255,0.25)}
+  .btn{width:100%;padding:10px;background:linear-gradient(135deg,var(--blue-bright),var(--blue-dark));border:none;border-radius:8px;color:#fff;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all 0.3s;text-transform:uppercase;margin-top:4px}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(51,156,255,0.35)}
+  .btn:active{transform:translateY(0)}
+  .status{margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;text-align:center;min-height:16px;transition:all 0.3s}
+  .status.error{color:#ff5555}
+  .status.success{color:var(--blue-bright)}
+  .attempts-left{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:rgba(255,255,255,0.25);text-align:right;margin-top:4px}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  .shake{animation:shake 0.3s ease}
+
+  .overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.92);z-index:200;align-items:center;justify-content:flex-start;flex-direction:column;padding:20px;padding-top:20px;text-align:center;animation:fadeIn 0.5s ease}
+  .overlay.show{display:flex}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .overlay .flag-box{background:rgba(51,156,255,0.08);border:2px solid var(--blue-bright);border-radius:16px;padding:24px 20px;max-width:320px;width:90%;animation:scaleIn 0.5s ease}
+  @keyframes scaleIn{from{transform:scale(0.8);opacity:0}to{transform:scale(1);opacity:1}}
+  .overlay .flag-box h2{font-family:'JetBrains Mono',monospace;color:var(--blue-bright);font-size:22px;font-weight:700;margin-bottom:12px;letter-spacing:2px}
+  .overlay .flag-box .flag{font-family:'JetBrains Mono',monospace;color:#fff;font-size:15px;font-weight:700;background:rgba(0,0,0,0.4);padding:12px 16px;border-radius:8px;margin:16px 0;word-break:break-all}
+  .overlay .flag-box p{color:rgba(255,255,255,0.65);font-size:14px;font-weight:700;line-height:1.6;margin-top:16px}
+  .overlay .flag-box a{display:inline-block;margin-top:20px;padding:12px 28px;background:var(--blue-bright);color:#0a0e17;text-decoration:none;border-radius:8px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;letter-spacing:1px}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="terminal-header">// BINARY_STREAM v68.83.84.65</div>
+  <div class="card" id="mainCard">
+
+    <div class="stream-display">
+      <div class="stream-label">> CAPTURED_PACKETS</div>
+      <div id="packetList"></div>
+    </div>
+
+    <div class="converter" id="converter">
+      <div class="conv-label">> PACKET_DECODER</div>
+      <div class="conv-row">
+        <div class="conv-block">
+          <div class="conv-val" id="convBin">--------</div>
+          <div class="conv-sub">Binary</div>
+        </div>
+        <div class="conv-arrow">→</div>
+        <div class="conv-block">
+          <div class="conv-val" id="convDec">---</div>
+          <div class="conv-sub">Decimal</div>
+        </div>
+        <div class="conv-arrow">→</div>
+        <div class="conv-block">
+          <div class="conv-val char" id="convChar">?</div>
+          <div class="conv-sub">CHAR</div>
+        </div>
+      </div>
+      <div class="conv-hint" id="convHint">TAP A PACKET TO DECODE</div>
+    </div>
+
+    <div class="tap-hint" id="tapHint">↑ TAP ANY PACKET ROW TO INSPECT ↑</div>
+
+    <div class="info-box">
+      <div class="info-text">
+        5 packets were intercepted, each containing 1 character.<br><span style="color:rgba(255,80,80,0.7)">Red</span> bits are corrupted — wait for a clean read.
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>Source</label>
+      <input type="text" value="agent_04" disabled style="opacity:0.5;cursor:not-allowed">
+    </div>
+    <div class="input-group">
+      <label>Decoded Word</label>
+      <input type="text" id="answer" placeholder="Enter decoded word" autocomplete="off">
+    </div>
+    <button class="btn" onclick="checkAnswer()">Submit</button>
+    <div class="status" id="status"></div>
+    <div class="attempts-left" id="attempts"></div>
+  </div>
+</div>
+
+<div class="overlay" id="successOverlay">
+  <div class="flag-box">
+    <h2>STREAM DECODED</h2>
+    <div class="flag" id="flagDisplay"></div>
+    <p>You read every bit. The next one won't sit still.</p>
+    <p style="color:rgba(255,255,255,0.45);font-size:12px;font-weight:400;margin-top:12px;">
+      CDDC is a <strong style="color:var(--blue-bright);font-weight:700;">free</strong> cybersecurity competition <strong style="color:var(--blue-bright);font-weight:700;">with attractive prizes</strong>, open to students as part of DSTA BrainHack.
+    </p>
+    <a href="https://form.gov.sg/69a8e2c13646169c05291a98" target="_blank">REGISTER FOR CDDC →</a>
+  </div>
+</div>
+
+<script>
+// Obfuscated answer & flag
+const _a=[66,89,84,69,83]; // BYTES
+const _f=[67,68,68,67,50,48,50,54,123,66,49,78,52,82,89,125]; // CDDC2026{B1N4RY}
+const answer=_a.map(c=>String.fromCharCode(c)).join('');
+
+// Convert each char to 8-bit binary string
+const packets=_a.map(code=>{
+  let b=code.toString(2);
+  while(b.length<8)b='0'+b;
+  return b;
+});
+
+// Build packet rows
+const list=document.getElementById('packetList');
+const rowEls=[];
+const bitEls=[];
+
+packets.forEach((pkt,idx)=>{
+  const row=document.createElement('div');
+  row.className='packet-row';
+
+  const index=document.createElement('div');
+  index.className='pkt-idx';
+  index.textContent='P'+idx;
+
+  const group=document.createElement('div');
+  group.className='bit-group';
+  const bits=[];
+  for(let i=0;i<8;i++){
+    const bit=document.createElement('div');
+    bit.className='bit '+(pkt[i]==='1'?'on':'off');
+    bit.textContent=pkt[i];
+    bit.dataset.real=pkt[i];
+    bit.dataset.pkt=idx;
+    bit.dataset.pos=i;
+    group.appendChild(bit);
+    bits.push(bit);
+  }
+
+  const status=document.createElement('div');
+  row.appendChild(index);
+  row.appendChild(group);
+  row.addEventListener('click',()=>selectPacket(idx));
+  list.appendChild(row);
+  rowEls.push(row);
+  bitEls.push(bits);
+});
+
+// Read currently displayed bits for a packet
+function readDisplayedBits(pIdx){
+  return bitEls[pIdx].map(b=>b.textContent).join('');
+}
+
+function updateConverter(){
+  if(selectedPkt<0)return;
+  const bits=bitEls[selectedPkt];
+  const hasCorruption=bits.some(b=>b.classList.contains('noise'));
+  const bin=bits.map(b=>b.textContent).join('');
+  const dec=parseInt(bin,2);
+  const ch=(dec>=32&&dec<=126)?String.fromCharCode(dec):'?';
+
+  // Build binary display with red corrupted bits
+  const binEl=document.getElementById('convBin');
+  binEl.innerHTML=bits.map(b=>{
+    if(b.classList.contains('noise'))return'<span class="bit-r">'+b.textContent+'</span>';
+    return b.textContent;
+  }).join('');
+
+  document.getElementById('convDec').textContent=dec;
+  const charEl=document.getElementById('convChar');
+  charEl.textContent=ch;
+  charEl.classList.toggle('corrupted',hasCorruption);
+}
+
+// Noise animation — random bits flicker
+let noiseInterval=setInterval(()=>{
+  bitEls.forEach((bits,pIdx)=>{
+    bits.forEach((bit,bIdx)=>{
+      if(Math.random()<0.06){
+        bit.classList.add('noise');
+        bit.textContent=bit.dataset.real==='1'?'0':'1';
+        updateConverter();
+        setTimeout(()=>{
+          bit.classList.remove('noise');
+          bit.textContent=bit.dataset.real;
+          bit.className='bit '+(bit.dataset.real==='1'?'on':'off');
+          updateConverter();
+        },150+Math.random()*200);
+      }
+    });
+  });
+},300);
+
+// Packet selection & converter
+let selectedPkt=-1;
+
+function selectPacket(idx){
+  selectedPkt=idx;
+  rowEls.forEach((r,i)=>r.classList.toggle('selected',i===idx));
+  document.getElementById('convHint').textContent='Packet P'+idx;
+
+  // Stagger reveal
+  const binEl=document.getElementById('convBin');
+  const decEl=document.getElementById('convDec');
+  const charEl=document.getElementById('convChar');
+
+  binEl.textContent=readDisplayedBits(idx);
+  decEl.textContent='...';
+  charEl.textContent='?';
+
+  setTimeout(()=>{
+    const bin=readDisplayedBits(idx);
+    const dec=parseInt(bin,2);
+    decEl.textContent=dec;
+  },300);
+
+  setTimeout(()=>{
+    const bin=readDisplayedBits(idx);
+    const dec=parseInt(bin,2);
+    charEl.textContent=(dec>=32&&dec<=126)?String.fromCharCode(dec):'?';
+  },600);
+}
+
+// Check answer
+let attempts=0;
+const hints=[
+  "Hint: Each packet is 8 bits = 1 byte = 1 ASCII character.",
+  "Hint: Click each packet to see its decoded letter.",
+  "Hint: Read the characters from P0 to P4 in order.",
+  "Hint: The word starts with B and has 5 letters.",
+  "Hint: 8 bits make one of these..."
+];
+
+function checkAnswer(){
+  const input=document.getElementById('answer').value.trim();
+  const status=document.getElementById('status');
+  const card=document.getElementById('mainCard');
+
+  if(input===answer){
+    status.className='status success';
+    status.textContent='\u25CF Packets decoded successfully';
+    clearInterval(noiseInterval);
+    // Stop noise, lock bits
+    bitEls.forEach((bits,pIdx)=>{
+      bits.forEach(bit=>{
+        bit.textContent=bit.dataset.real;
+        bit.className='bit '+(bit.dataset.real==='1'?'on':'off');
+      });
+    });
+    document.getElementById('flagDisplay').textContent=_f.map(c=>String.fromCharCode(c)).join('');
+    setTimeout(()=>document.getElementById('successOverlay').classList.add('show'),600);
+    return;
+  }
+
+  attempts++;
+  card.classList.remove('shake');
+  void card.offsetWidth;
+  card.classList.add('shake');
+  status.className='status error';
+  status.textContent='\u2717 INCORRECT \u2014 '+(attempts<=hints.length?hints[attempts-1]:"Click each packet row. The converter shows the letter. Combine all 5.");
+  document.getElementById('attempts').textContent='Attempts: '+attempts;
+  document.getElementById('answer').value='';
+}
+
+document.getElementById('answer').addEventListener('keydown',function(e){if(e.key==='Enter')checkAnswer()});
+
+// Select P0 by default after everything is ready
+setTimeout(()=>selectPacket(0),50);
+</script>
+</body>
+</html>
