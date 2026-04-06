@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stego Static</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--blue:#339cff;--blue-bright:#5bb8ff;--blue-dark:#1a7ae6}
+  body{min-height:100vh;background:#080c18;font-family:'Inter',sans-serif;display:flex;align-items:flex-start;justify-content:center;overflow-x:hidden;position:relative;padding-top:20px}
+  body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background-image:linear-gradient(rgba(51,156,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(51,156,255,0.03) 1px,transparent 1px);background-size:40px 40px;animation:gridMove 20s linear infinite;z-index:0}
+  @keyframes gridMove{0%{transform:translate(0,0)}100%{transform:translate(40px,40px)}}
+  body::after{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.1) 2px,rgba(0,0,0,0.1) 4px);pointer-events:none;z-index:100}
+  .container{position:relative;z-index:10;width:94%;max-width:320px;padding:16px}
+  .terminal-header{font-family:'JetBrains Mono',monospace;color:var(--blue);font-size:11px;margin-bottom:8px;opacity:0.8;letter-spacing:1px;font-weight:700}
+  .card{background:rgba(10,16,35,0.9);border:1px solid rgba(51,156,255,0.2);border-radius:12px;padding:18px;backdrop-filter:blur(20px);box-shadow:0 0 40px rgba(51,156,255,0.06),0 20px 60px rgba(0,0,0,0.5)}
+  .pixel-display{background:rgba(0,0,0,0.6);border:1px solid rgba(51,156,255,0.15);border-radius:8px;padding:10px;margin-bottom:14px;overflow:hidden}
+  .pixel-label{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:rgba(91,184,255,0.4);letter-spacing:1px;margin-bottom:8px}
+  .canvas-wrap{display:flex;justify-content:center}
+  canvas{border-radius:4px;image-rendering:pixelated}
+  .slider-section{margin-bottom:14px}
+  .slider-label{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:rgba(91,184,255,0.4);letter-spacing:1px;margin-bottom:10px}
+  .slider-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .slider-row span.ch-label{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1px;min-width:26px}
+  .ch-r{color:rgba(255,100,100,0.8)}.ch-g{color:rgba(100,255,100,0.8)}.ch-b{color:rgba(100,140,255,0.9)}
+  .slider-row input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:6px;border-radius:3px;outline:none;cursor:pointer}
+  .slider-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;cursor:pointer;border:2px solid rgba(10,16,35,0.9)}
+  .slider-row input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;cursor:pointer;border:2px solid rgba(10,16,35,0.9)}
+  .sr{background:rgba(255,80,80,0.15)}.sg{background:rgba(80,255,80,0.15)}.sb{background:rgba(80,120,255,0.15)}
+  .sr::-webkit-slider-thumb{background:#ff6464;box-shadow:0 0 8px rgba(255,100,100,0.4)}
+  .sg::-webkit-slider-thumb{background:#64ff64;box-shadow:0 0 8px rgba(100,255,100,0.4)}
+  .sb::-webkit-slider-thumb{background:#648cff;box-shadow:0 0 8px rgba(100,140,255,0.4)}
+  .sr::-moz-range-thumb{background:#ff6464;box-shadow:0 0 8px rgba(255,100,100,0.4)}
+  .sg::-moz-range-thumb{background:#64ff64;box-shadow:0 0 8px rgba(100,255,100,0.4)}
+  .sb::-moz-range-thumb{background:#648cff;box-shadow:0 0 8px rgba(100,140,255,0.4)}
+  .slider-val{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:rgba(255,255,255,0.4);min-width:28px;text-align:right}
+  .input-group{margin-bottom:12px}
+  .input-group label{display:block;font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(91,184,255,0.7);font-weight:700;margin-bottom:6px;letter-spacing:1px;text-transform:uppercase}
+  .input-group input{width:100%;padding:10px 14px;background:rgba(51,156,255,0.06);border:1px solid rgba(51,156,255,0.2);border-radius:8px;color:#fff;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;outline:none;transition:all 0.3s}
+  .input-group input:focus{border-color:var(--blue-bright);box-shadow:0 0 15px rgba(51,156,255,0.15);background:rgba(51,156,255,0.1)}
+  .input-group input::placeholder{color:rgba(255,255,255,0.25)}
+  .btn{width:100%;padding:10px;background:linear-gradient(135deg,var(--blue-bright),var(--blue-dark));border:none;border-radius:8px;color:#fff;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all 0.3s;text-transform:uppercase;margin-top:4px}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(51,156,255,0.35)}
+  .btn:active{transform:translateY(0)}
+  .status{margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;text-align:center;min-height:16px;transition:all 0.3s}
+  .status.error{color:#ff5555}
+  .status.success{color:var(--blue-bright)}
+  .attempts-left{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:rgba(255,255,255,0.25);text-align:right;margin-top:4px}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  .shake{animation:shake 0.3s ease}
+  .overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.92);z-index:200;align-items:center;justify-content:flex-start;flex-direction:column;padding:20px;padding-top:20px;text-align:center;animation:fadeIn 0.5s ease}
+  .overlay.show{display:flex}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .overlay .flag-box{background:rgba(51,156,255,0.08);border:2px solid var(--blue-bright);border-radius:16px;padding:24px 20px;max-width:320px;width:90%;animation:scaleIn 0.5s ease}
+  @keyframes scaleIn{from{transform:scale(0.8);opacity:0}to{transform:scale(1);opacity:1}}
+  .overlay .flag-box h2{font-family:'JetBrains Mono',monospace;color:var(--blue-bright);font-size:22px;font-weight:700;margin-bottom:12px;letter-spacing:2px}
+  .overlay .flag-box .flag{font-family:'JetBrains Mono',monospace;color:#fff;font-size:15px;font-weight:700;background:rgba(0,0,0,0.4);padding:12px 16px;border-radius:8px;margin:16px 0;word-break:break-all}
+  .overlay .flag-box p{color:rgba(255,255,255,0.65);font-size:14px;font-weight:700;line-height:1.6;margin-top:16px}
+  .overlay .flag-box a{display:inline-block;margin-top:20px;padding:12px 28px;background:var(--blue-bright);color:#0a0e17;text-decoration:none;border-radius:8px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;letter-spacing:1px}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="terminal-header">// STEGO_STATIC v68.83.84.65</div>
+  <div class="card" id="mainCard">
+
+    <div class="pixel-display">
+      <div class="pixel-label">> CORRUPTED_FEED</div>
+      <div class="canvas-wrap"><canvas id="cv"></canvas></div>
+    </div>
+
+    <div class="slider-section">
+      <div class="slider-label">> CHANNEL_CONTROL</div>
+      <div class="slider-row"><span class="ch-label ch-r">R</span><input type="range" class="sr" id="sR" min="0" max="255" value="255"><span class="slider-val" id="vR">255</span></div>
+      <div class="slider-row"><span class="ch-label ch-g">G</span><input type="range" class="sg" id="sG" min="0" max="255" value="255"><span class="slider-val" id="vG">255</span></div>
+      <div class="slider-row"><span class="ch-label ch-b">B</span><input type="range" class="sb" id="sB" min="0" max="255" value="255"><span class="slider-val" id="vB">255</span></div>
+    </div>
+
+    <div style="background:rgba(51,156,255,0.04);border:1px solid rgba(51,156,255,0.1);border-radius:8px;padding:10px 12px;margin-bottom:12px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:rgba(91,184,255,0.7);line-height:1.6;letter-spacing:0.5px;text-align:center">Three words are hidden. Find all 3 and enter them joined together in <span style="color:rgba(255,100,100,0.9)">R</span> → <span style="color:rgba(100,255,100,0.9)">G</span> → <span style="color:rgba(100,140,255,0.9)">B</span> order.</div>
+    </div>
+
+    <div class="input-group">
+      <label>Alt Text</label>
+      <input type="text" value="agent_05" disabled style="opacity:0.5;cursor:not-allowed;">
+    </div>
+
+    <div class="input-group">
+      <label>Secret</label>
+      <input type="text" id="secret" placeholder="e.g. WORDWORDWORD" autocomplete="off">
+    </div>
+
+    <button class="btn" onclick="check()">Reveal</button>
+    <div class="status" id="status"></div>
+    <div class="attempts-left" id="attempts"></div>
+  </div>
+</div>
+
+<div class="overlay" id="successOverlay">
+  <div class="flag-box">
+    <h2>STATIC CLEARED</h2>
+    <div class="flag" id="flagDisplay"></div>
+    <p>The hidden world is calling. Do you dare look closer?</p>
+    <p style="color:rgba(255,255,255,0.45);font-size:12px;font-weight:400;margin-top:8px;">
+      CDDC is a <strong style="color:var(--blue-bright);font-weight:700;">free</strong> cybersecurity competition <strong style="color:var(--blue-bright);font-weight:700;">with attractive prizes</strong>, open to students as part of DSTA BrainHack.
+    </p>
+    <a href="https://form.gov.sg/69a8e2c13646169c05291a98" target="_blank">REGISTER FOR CDDC →</a>
+  </div>
+</div>
+
+<script>
+// ── Pixel font (5w × 7h) ──
+const FN={
+A:['01110','10001','10001','11111','10001','10001','10001'],
+C:['01110','10001','10000','10000','10000','10001','01110'],
+D:['11100','10010','10001','10001','10001','10010','11100'],
+E:['11111','10000','10000','11110','10000','10000','11111'],
+G:['01110','10001','10000','10111','10001','10001','01110'],
+H:['10001','10001','10001','11111','10001','10001','10001'],
+I:['11111','00100','00100','00100','00100','00100','11111'],
+K:['10001','10010','10100','11000','10100','10010','10001'],
+N:['10001','11001','10101','10011','10001','10001','10001'],
+O:['01110','10001','10001','10001','10001','10001','01110'],
+P:['11110','10001','10001','11110','10000','10000','10000'],
+R:['11110','10001','10001','11110','10100','10010','10001'],
+S:['01111','10000','10000','01110','00001','00001','11110'],
+T:['11111','00100','00100','00100','00100','00100','00100'],
+V:['10001','10001','10001','10001','01010','01010','00100'],
+};
+
+// ── Obfuscated data ──
+const _w0=[72,73,68,69];       
+const _w1=[84,72,73,83];       
+const _w2=[68,65,84,65];       
+const _ans=[72,73,68,69,84,72,73,83,68,65,84,65];
+const _f=[67,68,68,67,50,48,50,54,123,83,84,51,71,48,95,86,49,83,49,48,78,125];
+
+const W0=_w0.map(c=>String.fromCharCode(c)).join('');
+const W1=_w1.map(c=>String.fromCharCode(c)).join('');
+const W2=_w2.map(c=>String.fromCharCode(c)).join('');
+const answer=_ans.map(c=>String.fromCharCode(c)).join('');
+
+// ── Grid ──
+const COLS=140, ROWS=105;
+const CHAR_H=7, CHAR_W=5, CHAR_GAP=2;
+const BOX_PAD=12;
+
+const cv=document.getElementById('cv');
+cv.width=COLS; cv.height=ROWS;
+cv.style.width='280px'; cv.style.height='210px';
+const ctx=cv.getContext('2d');
+
+// ── Build glyph bitmap for a word → returns Set of "row,col" strings ──
+function wordPixels(word,rowCenter,colCenter){
+  const w=word.length*CHAR_W+(word.length-1)*CHAR_GAP;
+  const sx=colCenter-Math.floor(w/2);
+  const sy=rowCenter-Math.floor(CHAR_H/2);
+  const set=new Set();
+  let cx=sx;
+  for(let li=0;li<word.length;li++){
+    const g=FN[word[li]]; if(!g)continue;
+    for(let r=0;r<CHAR_H;r++){
+      const bits=g[r];
+      for(let c=0;c<bits.length;c++){
+        if(bits[c]==='1') set.add((sy+r)*COLS+(cx+c));
+      }
+    }
+    cx+=CHAR_W+CHAR_GAP;
+  }
+  // Also compute bounding box
+  const bx={t:sy,l:sx,b:sy+CHAR_H-1,r:sx+w-1};
+  return{pixels:set,box:bx};
+}
+
+// ── Compute word positions + bounding rects ──
+const w0=wordPixels(W0,20,30);
+const w1=wordPixels(W1,52,105);
+const w2=wordPixels(W2,85,60);
+
+// ── Pre-build per-pixel lookup: 0=nothing, bitmask: 1=r_letter, 2=g_letter, 4=b_letter,
+//    8=r_box, 16=g_box, 32=b_box ──
+const pxType=new Uint8Array(ROWS*COLS);
+
+function markWord(wp,letterBit,boxBit){
+  // Mark letter pixels
+  wp.pixels.forEach(idx=>{ pxType[idx]|=letterBit; });
+  // Mark box region (padded rectangle)
+  const b=wp.box;
+  const t=Math.max(0,b.t-BOX_PAD), bot=Math.min(ROWS-1,b.b+BOX_PAD);
+  const l=Math.max(0,b.l-BOX_PAD), r=Math.min(COLS-1,b.r+BOX_PAD);
+  for(let row=t;row<=bot;row++){
+    for(let col=l;col<=r;col++){
+      pxType[row*COLS+col]|=boxBit;
+    }
+  }
+}
+
+markWord(w0,1,8);   // red word:  letter=1, box=8
+markWord(w1,2,16);  // green word: letter=2, box=16
+markWord(w2,4,32);  // blue word:  letter=4, box=32
+
+// ── Per-pixel animation seeds ──
+const seeds=[];
+for(let i=0;i<ROWS*COLS;i++){
+  seeds.push({
+    ph:Math.random()*Math.PI*2,
+    sr:0.4+Math.random()*1.2,
+    sg:0.4+Math.random()*1.2,
+    sb:0.4+Math.random()*1.2
+  });
+}
+
+// ── Render ──
+function render(t){
+  const s=t/1000;
+  const img=ctx.createImageData(COLS,ROWS);
+  const d=img.data;
+
+  const capR=parseInt(document.getElementById('sR').value);
+  const capG=parseInt(document.getElementById('sG').value);
+  const capB=parseInt(document.getElementById('sB').value);
+  document.getElementById('vR').textContent=capR;
+  document.getElementById('vG').textContent=capG;
+  document.getElementById('vB').textContent=capB;
+
+  for(let i=0;i<ROWS*COLS;i++){
+    const sd=seeds[i];
+    const flags=pxType[i];
+
+    // Base animated noise 0–255
+    let r=Math.floor((Math.sin(s*sd.sr+sd.ph)*0.5+0.5)*255);
+    let g=Math.floor((Math.sin(s*sd.sg+sd.ph+2.1)*0.5+0.5)*255);
+    let b=Math.floor((Math.sin(s*sd.sb+sd.ph+4.2)*0.5+0.5)*255);
+
+    // Letter pixels: force their channel to 255
+    if(flags&1) r=255;
+    if(flags&2) g=255;
+    if(flags&4) b=255;
+
+    // Box pixels (non-letter): suppress that channel to low noisy value
+    if((flags&8)&&!(flags&1)) r=Math.floor((Math.sin(s*0.7+sd.ph*3)*0.5+0.5)*192);
+    if((flags&16)&&!(flags&2)) g=Math.floor((Math.sin(s*0.8+sd.ph*3)*0.5+0.5)*192);
+    if((flags&32)&&!(flags&4)) b=Math.floor((Math.sin(s*0.9+sd.ph*3)*0.5+0.5)*192);
+
+    // Apply slider caps
+    r=Math.min(capR,r);
+    g=Math.min(capG,g);
+    b=Math.min(capB,b);
+
+    const off=i*4;
+    d[off]=r; d[off+1]=g; d[off+2]=b; d[off+3]=255;
+  }
+
+  ctx.putImageData(img,0,0);
+  requestAnimationFrame(render);
+}
+requestAnimationFrame(render);
+
+// ── Answer check ──
+let attempts=0;
+const hints=[
+  "Hint: Try turning two sliders all the way down...",
+  "Hint: There's a word hiding in each colour channel.",
+  "Hint: Isolate RED, then GREEN, then BLUE separately.",
+  "Hint: Read all three words — what do they tell you to do?",
+];
+
+function check(){
+  const input=document.getElementById('secret').value.trim().toUpperCase();
+  const status=document.getElementById('status');
+  const card=document.getElementById('mainCard');
+
+  if(input===answer){
+    status.className='status success';
+    status.textContent='● Secret accepted';
+    document.getElementById('flagDisplay').textContent=_f.map(c=>String.fromCharCode(c)).join('');
+    setTimeout(()=>document.getElementById('successOverlay').classList.add('show'),600);
+    return;
+  }
+
+  attempts++;
+  card.classList.remove('shake');
+  void card.offsetWidth;
+  card.classList.add('shake');
+  status.className='status error';
+  status.textContent='✗ INCORRECT — '+(attempts<=hints.length?hints[attempts-1]:hints[hints.length-1]);
+  document.getElementById('attempts').textContent='Attempts: '+attempts;
+  document.getElementById('secret').value='';
+}
+
+document.getElementById('secret').addEventListener('keydown',function(e){if(e.key==='Enter')check()});
+</script>
+</body>
+</html>
