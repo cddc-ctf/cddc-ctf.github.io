@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wrap Shop</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KFH2MB0EGV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-KFH2MB0EGV');
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--blue:#339cff;--bright:#5bb8ff;--dark:#1a7ae6}
+  body{min-height:100vh;background:#080c18;font-family:'Inter',sans-serif;display:flex;align-items:flex-start;justify-content:center;overflow-x:hidden;position:relative;padding-top:20px}
+  body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background-image:linear-gradient(rgba(51,156,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(51,156,255,0.03) 1px,transparent 1px);background-size:40px 40px;animation:g 20s linear infinite;z-index:0}
+  @keyframes g{0%{transform:translate(0,0)}100%{transform:translate(40px,40px)}}
+  body::after{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.1) 2px,rgba(0,0,0,0.1) 4px);pointer-events:none;z-index:100}
+  .ctn{position:relative;z-index:10;width:94%;max-width:340px;padding:16px}
+  .hdr{font-family:'JetBrains Mono',monospace;color:var(--blue);font-size:11px;margin-bottom:8px;opacity:0.8;letter-spacing:1px;font-weight:700}
+  .card{background:rgba(10,16,35,0.9);border:1px solid rgba(51,156,255,0.2);border-radius:12px;padding:18px;backdrop-filter:blur(20px);box-shadow:0 0 40px rgba(51,156,255,0.06),0 20px 60px rgba(0,0,0,0.5)}
+  .wbar{display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.5);border:1px solid rgba(51,156,255,0.15);border-radius:8px;padding:12px 14px;margin-bottom:12px}
+  .wlbl{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:rgba(91,184,255,0.5);letter-spacing:1px}
+  .wval{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;color:#fff;text-shadow:0 0 10px rgba(91,184,255,0.3)}
+  .wval .s{color:rgba(91,184,255,0.6);font-size:16px}
+  .info{background:rgba(51,156,255,0.04);border:1px solid rgba(51,156,255,0.1);border-radius:8px;padding:10px 12px;margin-bottom:12px}
+  .info p{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:rgba(91,184,255,0.7);line-height:1.7;letter-spacing:0.5px;text-align:center}
+  .slbl{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:rgba(91,184,255,0.4);letter-spacing:1px;margin-bottom:8px}
+  .irow{display:flex;align-items:center;gap:8px;padding:10px 12px;background:rgba(0,0,0,0.25);border:1px solid rgba(51,156,255,0.08);border-radius:8px;margin-bottom:6px}
+  .ileft{flex:1;display:flex;flex-direction:column;gap:2px}
+  .iname{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:#fff;letter-spacing:0.5px}
+  .iprice{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--bright);text-shadow:0 0 8px rgba(91,184,255,0.3)}
+  .iown{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--bright);letter-spacing:1px;margin-top:4px;text-shadow:0 0 8px rgba(91,184,255,0.3)}
+  .qc{display:flex;align-items:center;gap:3px}
+  .qb{width:30px;height:30px;display:flex;align-items:center;justify-content:center;background:rgba(51,156,255,0.08);border:1px solid rgba(51,156,255,0.2);border-radius:6px;color:var(--bright);font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;cursor:pointer;user-select:none}
+  .qb:hover{background:rgba(51,156,255,0.15);border-color:var(--bright)}
+  .qb:active{transform:scale(0.9)}
+  .qv{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:#fff;min-width:38px;text-align:center;background:rgba(51,156,255,0.06);border:1px solid rgba(51,156,255,0.15);border-radius:6px;padding:3px 0}
+  .cbox{background:rgba(0,0,0,0.5);border:1px solid rgba(51,156,255,0.2);border-radius:8px;padding:12px 14px;margin:14px 0}
+  .clbl{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:rgba(91,184,255,0.4);letter-spacing:1px;margin-bottom:6px}
+  .crow{display:flex;justify-content:space-between;align-items:center}
+  .ctlbl{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:rgba(91,184,255,0.5);letter-spacing:1px}
+  .ctval{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:#fff;text-shadow:0 0 10px rgba(91,184,255,0.3)}
+  .ctov{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:#ff5555;text-shadow:0 0 12px rgba(255,80,80,0.4)}
+  .cnote{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;text-align:right;margin-top:6px;min-height:16px}
+  .arow{display:flex;gap:8px;margin-bottom:8px}
+  .ab{flex:1;height:38px;display:flex;align-items:center;justify-content:center;border:none;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all 0.2s}
+  .ab:disabled{opacity:0.7;cursor:not-allowed;filter:grayscale(1)}
+  .abuy{background:rgba(91,184,255,0.25);color:#fff;border:2px solid var(--bright);box-shadow:0 0 12px rgba(91,184,255,0.15)}
+  .abuy:hover:not(:disabled){background:rgba(91,184,255,0.4);box-shadow:0 0 20px rgba(91,184,255,0.3)}
+  .asel{background:rgba(255,200,50,0.15);color:#fff;border:2px solid rgba(255,200,50,0.6);box-shadow:0 0 12px rgba(255,200,50,0.1)}
+  .asel:hover:not(:disabled){background:rgba(255,200,50,0.3);box-shadow:0 0 20px rgba(255,200,50,0.2)}
+  .fc{background:rgba(255,200,50,0.03);display:flex;align-items:center;gap:10px;padding:12px;border-radius:8px;border:1px solid rgba(255,200,50,0.25);margin-top:14px}
+  .fbtn{height:34px;padding:0 16px;background:linear-gradient(135deg,rgba(255,200,50,0.7),rgba(200,150,0,0.7));color:#0a0e17;border:none;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer}
+  .fbtn:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(255,200,50,0.3)}
+  .stat{margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;text-align:center;min-height:16px}
+  .sok{color:var(--bright)}.ser{color:#ff5555}
+  .card.sk{animation:sk 0.3s ease}
+  @keyframes sk{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  .olay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.92);z-index:200;align-items:center;justify-content:flex-start;flex-direction:column;padding:20px;padding-top:20px;text-align:center}
+  .olay.show{display:flex;animation:fi 0.5s ease}
+  @keyframes fi{from{opacity:0}to{opacity:1}}
+  .fb2{background:rgba(51,156,255,0.08);border:2px solid var(--bright);border-radius:16px;padding:24px 20px;max-width:320px;width:90%;animation:si 0.5s ease}
+  @keyframes si{from{transform:scale(0.8);opacity:0}to{transform:scale(1);opacity:1}}
+  .fb2 h2{font-family:'JetBrains Mono',monospace;color:var(--bright);font-size:22px;font-weight:700;margin-bottom:12px;letter-spacing:2px}
+  .fb2 .fl{font-family:'JetBrains Mono',monospace;color:#fff;font-size:15px;font-weight:700;background:rgba(0,0,0,0.4);padding:12px 16px;border-radius:8px;margin:16px 0;word-break:break-all}
+  .fb2 p{color:rgba(255,255,255,0.65);font-size:14px;font-weight:700;line-height:1.6;margin-top:16px}
+  .fb2 a{display:inline-block;margin-top:20px;padding:12px 28px;background:var(--bright);color:#0a0e17;text-decoration:none;border-radius:8px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;letter-spacing:1px}
+</style>
+</head>
+<body>
+<div class="ctn">
+  <div class="hdr">// WRAP_SHOP v68.83.84.65</div>
+  <div class="card" id="mc">
+    <div class="wbar">
+      <div>
+        <div class="wlbl">&gt; WALLET (max $255)</div>
+        <div class="wval"><span class="s">$</span><span id="wv">13</span></div>
+      </div>
+    </div>
+    <div class="info">
+      <p>Welcome to wrap shop. Almost everything here maxes out at <span style="color:#fff">$255</span>. What happens after that?</p>
+    </div>
+    <div class="slbl">&gt; CART</div>
+    <div class="irow">
+      <div style="font-size:20px">&#127791;</div>
+      <div class="ileft">
+        <div class="iname">WRAP</div>
+        <div class="iprice">$37</div>
+        <div class="iown" id="sd">OWNED: 0</div>
+      </div>
+      <div class="qc">
+        <div class="qb" id="bm">&minus;</div>
+        <div class="qv" id="qd">0</div>
+        <div class="qb" id="bp">+</div>
+      </div>
+    </div>
+    <div class="cbox">
+      <div class="clbl">&gt; TOTAL</div>
+      <div class="crow">
+        <div class="ctlbl">CHARGE</div>
+        <div id="ct" class="ctval">$0</div>
+      </div>
+      <div class="cnote" id="cn"></div>
+    </div>
+    <div class="arow">
+      <button class="ab abuy" id="bb" disabled>BUY</button>
+      <button class="ab asel" id="sb" disabled>SELL</button>
+    </div>
+    <div class="fc">
+      <div style="font-size:20px">&#127988;</div>
+      <div style="flex:1">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:rgba(255,200,50,0.9)">FLAG</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:rgba(255,200,50,0.5);margin-top:2px;text-shadow:0 0 8px rgba(255,200,50,0.2)">$200</div>
+      </div>
+      <button class="fbtn" id="fb">BUY FLAG</button>
+    </div>
+    <div class="stat" id="st"></div>
+  </div>
+</div>
+<div class="olay" id="ov">
+  <div class="fb2">
+    <h2>OVERFLOW DETECTED</h2>
+    <div class="fl" id="fd"></div>
+    <p>You got rich off a math glitch. Think you can find the next one?</p>
+    <p style="color:rgba(255,255,255,0.45);font-size:12px;font-weight:400;margin-top:8px;">CDDC is a <strong style="color:var(--bright);font-weight:700;">free</strong> cybersecurity competition <strong style="color:var(--bright);font-weight:700;">with attractive prizes</strong>, open to students as part of DSTA BrainHack.</p>
+    <a href="https://form.gov.sg/69a8e2c13646169c05291a98" target="_blank">REGISTER FOR CDDC &rarr;</a>
+  </div>
+</div>
+<script id="app">
+// placeholder
+</script>
+</body>
+</html>
+<script>
+(function(){
+  var Z = [0x43,0x44,0x44,0x43,0x32,0x30,0x32,0x36,0x7b,0x30,0x56,0x33,0x52,0x46,0x4c,0x30,0x57,0x7d];
+  var S = [13, 37, 200, 0, 0, 0];
+
+  function W(n) { return ((n % 256) + 256) % 256; }
+
+  function E(x) { return document.getElementById(x); }
+
+  function setNote(raw, val) {
+    var el = E('cn');
+    while (el.firstChild) el.removeChild(el.firstChild);
+    var a = document.createElement('span');
+    a.style.color = 'rgba(255,80,80,0.6)';
+    a.style.textDecoration = 'line-through';
+    a.textContent = '$' + raw;
+    var b = document.createElement('span');
+    b.style.color = 'rgba(255,80,80,0.9)';
+    b.textContent = ' wraps to ';
+    var c = document.createElement('span');
+    c.style.color = '#ff5555';
+    c.textContent = '$' + val;
+    el.appendChild(a);
+    el.appendChild(b);
+    el.appendChild(c);
+  }
+
+  function clearNote() {
+    var el = E('cn');
+    while (el.firstChild) el.removeChild(el.firstChild);
+  }
+
+  function R() {
+    var q = S[3], p = S[1], w = S[0], o = S[4];
+    var r = p * q, v = W(r), h = q > 0, f = r > 255;
+    E('qd').textContent = '' + q;
+    E('sd').textContent = 'OWNED: ' + o;
+    E('ct').textContent = '$' + v;
+    E('ct').className = f ? 'ctov' : 'ctval';
+    if (f) { setNote(r, v); } else { clearNote(); }
+    E('bb').disabled = !h || v > w;
+    E('sb').disabled = !h || q > o;
+    E('wv').textContent = '' + w;
+  }
+
+  function M(t, k) {
+    var el = E('st');
+    el.textContent = t;
+    el.className = k ? 'stat sok' : 'stat ser';
+  }
+
+  function K() {
+    var c = E('mc');
+    c.classList.remove('sk');
+    setTimeout(function() { c.classList.add('sk'); }, 20);
+  }
+
+  E('bp').onclick = function() { if (S[3] < 99) S[3]++; R(); };
+  E('bm').onclick = function() { if (S[3] > 0) S[3]--; R(); };
+
+  E('bb').onclick = function() {
+    var r = S[1] * S[3], c = W(r);
+    if (c > S[0]) { M('Cannot afford $' + c, 0); return; }
+    S[0] = W(S[0] - c);
+    S[4] += S[3];
+    M('Bought ' + S[3] + ' wrap' + (S[3] > 1 ? 's' : '') + ' for $' + c, 1);
+    S[3] = 0;
+    R();
+  };
+
+  E('sb').onclick = function() {
+    var q = S[3];
+    if (q < 1 || q > S[4]) return;
+    var r = S[1] * q, v = W(r);
+    S[0] = W(S[0] + v);
+    S[4] -= q;
+    M('Sold ' + q + ' wrap' + (q > 1 ? 's' : '') + ' for $' + v, 1);
+    S[3] = 0;
+    R();
+  };
+
+  E('fb').onclick = function() {
+    if (S[0] < S[2]) {
+      S[5]++;
+      M('Need $' + S[2] + '. You have $' + S[0], 0);
+      K();
+      var h = [
+        'What happens when the total goes past $255?',
+        'Try adding 7 wraps to the cart.',
+        'Buy cheap (when it wraps), sell fewer back at normal price.',
+        '7 x $37 = $259 wraps to $3. Sell 6 back = $222.'
+      ];
+      var i = S[5];
+      setTimeout(function() { if (i <= h.length) M(h[i - 1], 0); }, 1500);
+      return;
+    }
+    S[0] = W(S[0] - S[2]);
+    M('FLAG PURCHASED', 1);
+    var f = '';
+    for (var i = 0; i < Z.length; i++) f += String.fromCharCode(Z[i]);
+    E('fd').textContent = f;
+    setTimeout(function() { E('ov').className = 'olay show'; }, 600);
+    R();
+  };
+
+  R();
+})();
+</script>
+
