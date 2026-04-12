@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keep Typing</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KFH2MB0EGV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-KFH2MB0EGV');
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--blue:#339cff;--bright:#5bb8ff;--dark:#1a7ae6}
+  body{min-height:100vh;background:#080c18;font-family:'Inter',sans-serif;display:flex;align-items:flex-start;justify-content:center;overflow-x:hidden;position:relative;padding-top:20px}
+  body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background-image:linear-gradient(rgba(51,156,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(51,156,255,0.03) 1px,transparent 1px);background-size:40px 40px;animation:gridMove 20s linear infinite;z-index:0}
+  @keyframes gridMove{0%{transform:translate(0,0)}100%{transform:translate(40px,40px)}}
+  body::after{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.1) 2px,rgba(0,0,0,0.1) 4px);pointer-events:none;z-index:100}
+  .container{position:relative;z-index:10;width:96%;max-width:370px;padding:16px}
+  .hdr{font-family:'JetBrains Mono',monospace;color:var(--blue);font-size:12px;margin-bottom:8px;opacity:0.8;letter-spacing:1px;font-weight:700}
+  .card{background:rgba(10,16,35,0.9);border:1px solid rgba(51,156,255,0.2);border-radius:12px;padding:18px;backdrop-filter:blur(20px);box-shadow:0 0 40px rgba(51,156,255,0.06),0 20px 60px rgba(0,0,0,0.5)}
+  .correct-box{background:rgba(51,156,255,0.04);border:1px solid rgba(91,255,143,0.2);border-radius:8px;padding:12px;margin-bottom:14px;text-align:center}
+  .correct-label{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:rgba(91,255,143,0.5);letter-spacing:1px;margin-bottom:8px}
+  .correct-val{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:rgba(91,255,143,0.85);letter-spacing:2px;word-break:break-all;line-height:1.6;text-shadow:0 0 8px rgba(91,255,143,0.2)}
+  .mem-section{background:rgba(0,0,0,0.5);border:1px solid rgba(51,156,255,0.15);border-radius:8px;padding:12px 10px;margin-bottom:14px}
+  .mem-label{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:rgba(91,184,255,0.7);letter-spacing:1px;margin-bottom:8px}
+  .mem-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:3px}
+  .m-cell{height:42px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;border-radius:5px;transition:all 0.15s;border:1.5px solid rgba(91,184,255,0.2);background:rgba(51,156,255,0.03);color:rgba(91,184,255,0.25)}
+  .m-cell.has-val{color:rgba(91,184,255,0.45)}
+  .m-cell.filled{border-color:rgba(91,184,255,0.5);background:rgba(51,156,255,0.12);color:var(--bright);text-shadow:0 0 6px rgba(91,184,255,0.3)}
+  .m-cell.vlen{border-color:rgba(255,200,50,0.4);background:rgba(255,200,50,0.06);color:rgba(255,200,50,0.6);box-shadow:0 0 10px rgba(255,200,50,0.1)}
+  .m-cell.vlen.has-val{color:rgba(255,200,50,0.7)}
+  .m-cell.vlen.filled{border-color:rgba(255,200,50,0.7);background:rgba(255,200,50,0.12);color:rgba(255,200,50,1);text-shadow:0 0 10px rgba(255,200,50,0.5);box-shadow:0 0 16px rgba(255,200,50,0.2)}
+  .len-section{background:rgba(0,0,0,0.4);border:1px solid rgba(51,156,255,0.15);border-radius:8px;padding:12px;margin-bottom:14px}
+  .len-header{display:flex;align-items:center;justify-content:space-between}
+  .len-label{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:rgba(91,184,255,0.8);letter-spacing:1px}
+  .len-display{display:flex;align-items:baseline;gap:4px}
+  .len-num{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;color:var(--bright);text-shadow:0 0 6px rgba(91,184,255,0.3)}
+  .len-num.empty{color:rgba(91,184,255,0.6)}
+  .len-slash{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:rgba(255,255,255,0.3)}
+  .len-check{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;color:rgba(255,200,50,0.8);text-shadow:0 0 6px rgba(255,200,50,0.2)}
+  .len-bar-wrap{margin-top:8px;height:6px;background:rgba(51,156,255,0.12);border-radius:3px;overflow:hidden}
+  .len-bar{height:100%;border-radius:3px;transition:width 0.15s;background:var(--bright)}
+  .chk-section{margin-bottom:14px}
+  .chk-row{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(0,0,0,0.2);transition:all 0.3s}
+  .chk-row.done{border-color:rgba(91,255,143,0.3);background:rgba(91,255,143,0.06)}
+  .chk-icon{font-size:18px;min-width:24px;text-align:center}
+  .chk-main{flex:1}
+  .chk-text{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;letter-spacing:0.5px}
+  .chk-text.off{color:rgba(255,255,255,0.5)}.chk-text.on{color:rgba(91,255,143,0.9)}
+  .chk-sub{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;margin-top:2px;letter-spacing:0.5px}
+  .chk-sub.dim{color:rgba(255,255,255,0.3)}.chk-sub.partial{color:rgba(255,200,50,0.75)}.chk-sub.good{color:rgba(91,255,143,0.65)}
+  .chk-input{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;margin-top:6px;padding:6px 8px;background:rgba(0,0,0,0.3);border:1px solid rgba(91,184,255,0.1);border-radius:5px;word-break:break-all;letter-spacing:1.5px;line-height:1.6;min-height:22px}
+  .chk-input.empty{color:rgba(255,255,255,0.15);font-style:italic;letter-spacing:0.5px}
+  .chk-input.has-text{color:rgba(91,184,255,0.7)}
+  .input-area{margin-bottom:12px}
+  .input-area label{display:block;font-family:'JetBrains Mono',monospace;font-size:12px;color:rgba(91,184,255,0.85);font-weight:700;margin-bottom:6px;letter-spacing:1px;text-transform:uppercase}
+  .input-area input{width:100%;padding:12px 14px;background:rgba(51,156,255,0.06);border:1px solid rgba(51,156,255,0.2);border-radius:8px;color:#fff;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;outline:none;transition:all 0.3s}
+  .input-area input:focus{border-color:var(--bright);box-shadow:0 0 15px rgba(51,156,255,0.15);background:rgba(51,156,255,0.1)}
+  .input-area input::placeholder{color:rgba(255,255,255,0.35)}
+  .btn{width:100%;padding:12px;border:none;border-radius:8px;color:#fff;font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all 0.3s;text-transform:uppercase;margin-top:6px}
+  .btn.ready{background:linear-gradient(135deg,#5bff8f,#2a9d5a);box-shadow:0 0 20px rgba(91,255,143,0.2)}
+  .btn.ready:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(91,255,143,0.35)}
+  .btn.notready{background:linear-gradient(135deg,var(--bright),var(--dark))}
+  .btn.notready:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(91,184,255,0.35)}
+  .btn:active{transform:translateY(0)}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  .shake{animation:shake 0.3s ease}
+  .overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.92);z-index:200;align-items:center;justify-content:flex-start;flex-direction:column;padding:20px;padding-top:20px;text-align:center;animation:fadeIn 0.5s ease}
+  .overlay.show{display:flex}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .overlay .flag-box{background:rgba(51,156,255,0.08);border:2px solid var(--bright);border-radius:16px;padding:24px 20px;max-width:360px;width:92%;animation:scaleIn 0.5s ease}
+  @keyframes scaleIn{from{transform:scale(0.8);opacity:0}to{transform:scale(1);opacity:1}}
+  .overlay .flag-box h2{font-family:'JetBrains Mono',monospace;color:var(--bright);font-size:22px;font-weight:700;margin-bottom:12px;letter-spacing:2px}
+  .overlay .flag-box .flag{font-family:'JetBrains Mono',monospace;color:#fff;font-size:15px;font-weight:700;background:rgba(0,0,0,0.4);padding:12px 16px;border-radius:8px;margin:16px 0;word-break:break-all}
+  .overlay .flag-box p{color:rgba(255,255,255,0.65);font-size:14px;font-weight:700;line-height:1.6;margin-top:16px}
+  .overlay .flag-box a{display:inline-block;margin-top:20px;padding:12px 28px;background:var(--bright);color:#0a0e17;text-decoration:none;border-radius:8px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;letter-spacing:1px}
+  .edu-box{background:rgba(51,156,255,0.04);border:1px solid rgba(51,156,255,0.1);border-radius:8px;padding:12px;margin:16px 0 0}
+  .edu-title{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--bright);letter-spacing:1px;margin-bottom:6px}
+  .edu-text{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:400;color:rgba(255,255,255,0.55);line-height:1.8}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="hdr">// KEEP_TYPING v68.83.84.65</div>
+  <div class="card" id="mainCard">
+
+    <div class="correct-box">
+      <div class="correct-label">> CORRECT USERNAME</div>
+      <div class="correct-val" id="correctDisplay"></div>
+    </div>
+
+    <div class="mem-section">
+      <div class="mem-label">> MEMORY</div>
+      <div class="mem-grid" id="memGrid"></div>
+    </div>
+
+    <div class="len-section">
+      <div class="len-header">
+        <div class="len-label">INPUT LENGTH</div>
+        <div class="len-display">
+          <div class="len-num empty" id="lenTyped">00</div>
+          <div class="len-slash">/</div>
+          <div class="len-check" id="lenCheck">04</div>
+        </div>
+      </div>
+      <div class="len-bar-wrap"><div class="len-bar" id="lenBar" style="width:0%"></div></div>
+    </div>
+
+    <div class="chk-section">
+      <div class="chk-row" id="chkRow">
+        <div class="chk-icon" id="chkIcon">❌</div>
+        <div class="chk-main">
+          <div class="chk-text off" id="chkText">USERNAME VERIFIED</div>
+          <div class="chk-sub dim" id="chkSub">0 / 4 characters correct</div>
+          <div class="chk-input empty" id="chkInput">no input</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-area">
+      <label>Username</label>
+      <input type="text" id="userInput" placeholder="agent_07..." autocomplete="off" maxlength="24">
+    </div>
+
+    <button class="btn notready" id="submitBtn" onclick="submit()">AUTHENTICATE</button>
+  </div>
+</div>
+
+<div class="overlay" id="successOverlay">
+  <div class="flag-box">
+    <h2>ACCESS GRANTED</h2>
+    <div class="flag" id="flagDisplay"></div>
+    <p>22 characters to log in. 2 more to break everything. Still think you're just a user?</p>
+    <p style="color:rgba(255,255,255,0.45);font-size:12px;font-weight:400;margin-top:12px;">
+      CDDC is a <strong style="color:var(--bright);font-weight:700;">free</strong> cybersecurity competition <strong style="color:var(--bright);font-weight:700;">with attractive prizes</strong>, open to students as part of DSTA BrainHack.
+    </p>
+    <a href="https://form.gov.sg/69a8e2c13646169c05291a98" target="_blank">REGISTER FOR CDDC →</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  // Flag
+  var FLAG=[67,68,68,67,50,48,50,54,123,66,85,70,70,51,82,125];
+
+  // Correct username: "agent_07_cddc_bh_2026!" = 22 chars
+  var CORRECT_CODES=[97,103,101,110,116,95,48,55,95,99,100,100,99,95,98,104,95,50,48,50,54,33];
+  var CORRECT='';
+  for(var i=0;i<CORRECT_CODES.length;i++) CORRECT+=String.fromCharCode(CORRECT_CODES[i]);
+  var CORRECT_LEN=22; // length of correct username
+
+  // Memory: 24 cells. Cells 0-21 = username. Cells 22-23 = verification length (default "04").
+  var DEFAULT_VLEN=4;
+  var VLEN_POS=22;
+
+  // Defaults for all 24 cells
+  var defaults=[];
+  for(var i=0;i<24;i++) defaults[i]='·';
+  defaults[22]='0'; defaults[23]='4';
+
+  function E(id){return document.getElementById(id)}
+
+  // Show correct username
+  E('correctDisplay').textContent=CORRECT;
+
+  // Build memory grid
+  var gridEl=E('memGrid');
+  var cells=[];
+  for(var i=0;i<24;i++){
+    var c=document.createElement('div');
+    var isVlen=(i===22||i===23);
+    c.className='m-cell'+(isVlen?' vlen':'')+(defaults[i]!=='·'?' has-val':'');
+    c.textContent=defaults[i];
+    gridEl.appendChild(c);
+    cells.push(c);
+  }
+
+  // Read memory as array of characters
+  function readMemory(){
+    var mem=[];
+    for(var i=0;i<24;i++) mem.push(cells[i].textContent);
+    return mem;
+  }
+
+  // Parse verification length from cells 22-23
+  // Must be exactly 2 digits, combined value 1-24
+  function getVerifyLen(mem){
+    var c0=mem[VLEN_POS];
+    var c1=mem[VLEN_POS+1];
+    var s=c0+c1;
+    if(!/^[0-9]{2}$/.test(s)) return {str:s,val:-1,valid:false};
+    var n=parseInt(s,10);
+    if(n<1||n>24) return {str:s,val:n,valid:false};
+    return {str:s,val:n,valid:true};
+  }
+
+  // Count how many of the first X chars in memory match CORRECT
+  // X = verification length. If fewer chars in memory than X, use all chars in memory.
+  function countMatch(mem,x){
+    var count=0;
+    var limit=Math.min(x,24);
+    for(var i=0;i<limit;i++){
+      if(mem[i]==='·') continue;
+      if(i<CORRECT.length&&mem[i]===CORRECT[i]) count++;
+    }
+    return count;
+  }
+
+  // Check win condition:
+  // 1. First 22 chars in memory must exactly match CORRECT
+  // 2. Last 2 chars must be "22" (the length of CORRECT)
+  function checkWin(mem){
+    // Check first 22 chars
+    for(var i=0;i<CORRECT_LEN;i++){
+      if(i>=24||mem[i]!==CORRECT[i]) return false;
+    }
+    // Check last 2 chars are "22"
+    if(mem[22]!=='2'||mem[23]!=='2') return false;
+    return true;
+  }
+
+  var inp=E('userInput');
+  inp.addEventListener('input',update);
+  inp.addEventListener('keydown',function(e){if(e.key==='Enter')submit()});
+
+  function update(){
+    var val=inp.value;
+    var len=val.length;
+
+    // Write input to memory grid
+    for(var i=0;i<24;i++){
+      var vl_cls=(i===22||i===23)?' vlen':'';
+      if(i<len){
+        cells[i].textContent=val[i];
+        cells[i].className='m-cell filled'+vl_cls;
+      } else {
+        cells[i].textContent=defaults[i];
+        cells[i].className='m-cell'+vl_cls+(defaults[i]!=='·'?' has-val':'');
+      }
+    }
+
+    // Read current memory state
+    var mem=readMemory();
+    var vl=getVerifyLen(mem);
+    var x=vl.valid?vl.val:0;
+    var matched=x>0?countMatch(mem,x):0;
+    var won=checkWin(mem);
+
+    // Update length display: typed / verification length
+    E('lenTyped').textContent=String(len).padStart(2,'0');
+    E('lenTyped').className='len-num'+(len===0?' empty':'');
+    E('lenCheck').textContent=vl.str;
+    E('lenBar').style.width=Math.min(100,len/24*100)+'%';
+
+    // Update verification display
+    E('chkRow').className='chk-row'+(won?' done':'');
+    E('chkIcon').textContent=won?'✅':'❌';
+    E('chkText').className='chk-text '+(won?'on':'off');
+
+    var sub=E('chkSub');
+    if(x===0){
+      sub.textContent='invalid verification length';
+      sub.className='chk-sub dim';
+    } else {
+      sub.textContent=matched+' / '+x+' characters correct';
+      sub.className='chk-sub '+(won?'good':matched>0?'partial':'dim');
+    }
+
+    var ci=E('chkInput');
+    if(x===0){
+      ci.textContent='(invalid length)';
+      ci.className='chk-input empty';
+    } else if(len===0){
+      ci.textContent='no input';
+      ci.className='chk-input empty';
+    } else {
+      var shown='';
+      for(var i=0;i<x&&i<24;i++){
+        if(mem[i]==='·') break;
+        shown+=mem[i];
+      }
+      ci.textContent=shown||'no input';
+      ci.className=shown?'chk-input has-text':'chk-input empty';
+    }
+
+    // Button
+    var btn=E('submitBtn');
+    if(won){btn.className='btn ready';btn.textContent='LOG IN';}
+    else{btn.className='btn notready';btn.textContent='AUTHENTICATE';}
+  }
+
+  window.submit=function(){
+    var val=inp.value;
+    var card=E('mainCard');
+    var mem=readMemory();
+    var won=checkWin(mem);
+
+    if(!won){
+      card.classList.remove('shake');
+      void card.offsetWidth;
+      card.classList.add('shake');
+      return;
+    }
+
+    var flag='';
+    for(var i=0;i<FLAG.length;i++) flag+=String.fromCharCode(FLAG[i]);
+    E('flagDisplay').textContent=flag;
+    setTimeout(function(){E('successOverlay').classList.add('show')},500);
+  };
+
+  update();
+})();
+</script>
+</body>
+</html>
