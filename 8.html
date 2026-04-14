@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Poly</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KFH2MB0EGV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-KFH2MB0EGV');
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--blue:#339cff;--blue-bright:#5bb8ff;--blue-dark:#1a7ae6}
+  body{min-height:100vh;background:#080c18;font-family:'Inter',sans-serif;display:flex;align-items:flex-start;justify-content:center;overflow-x:hidden;position:relative;padding-top:20px;padding-bottom:20px}
+  body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background-image:linear-gradient(rgba(51,156,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(51,156,255,0.03) 1px,transparent 1px);background-size:40px 40px;animation:gridMove 20s linear infinite;z-index:0}
+  @keyframes gridMove{0%{transform:translate(0,0)}100%{transform:translate(40px,40px)}}
+  .container{position:relative;z-index:10;width:94%;max-width:340px;padding:16px}
+  .terminal-header{font-family:'JetBrains Mono',monospace;color:var(--blue);font-size:11px;margin-bottom:8px;opacity:0.8;letter-spacing:1px;font-weight:700}
+  .card{background:rgba(10,16,35,0.9);border:1px solid rgba(51,156,255,0.2);border-radius:12px;padding:14px;backdrop-filter:blur(20px);box-shadow:0 0 40px rgba(51,156,255,0.06),0 20px 60px rgba(0,0,0,0.5)}
+
+  .slide-viewer{background:rgba(0,0,0,0.5);border:1px solid rgba(51,156,255,0.15);border-radius:8px;overflow:hidden;margin-bottom:12px}
+  .slide-toolbar{display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:rgba(0,0,0,0.4);border-bottom:1px solid rgba(51,156,255,0.1)}
+  .slide-counter{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:rgba(91,184,255,0.5);letter-spacing:1px}
+  .slide-nav{display:flex;gap:6px}
+  .nav-btn{width:28px;height:28px;display:flex;align-items:center;justify-content:center;background:rgba(51,156,255,0.08);border:1px solid rgba(51,156,255,0.2);border-radius:6px;color:var(--blue-bright);font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;cursor:pointer;user-select:none;transition:all 0.2s}
+  .nav-btn:hover{background:rgba(51,156,255,0.15);border-color:var(--blue-bright)}
+  .nav-btn:active{transform:scale(0.9)}
+  .nav-btn.disabled{opacity:0.3;pointer-events:none}
+
+  .slide-area{position:relative;width:100%;height:180px;background:#fff;overflow:hidden;cursor:default}
+  .slide{display:none;width:100%;height:100%;padding:14px;position:relative;flex-direction:column;justify-content:flex-start}
+  .slide.active{display:flex}
+
+  .slide-title-bar{background:#1a3a5c;padding:8px 12px;margin:-14px -14px 10px -14px}
+  .slide-title{font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:#fff;line-height:1.3}
+  .slide-body{flex:1;display:flex;flex-direction:column;gap:5px;position:relative}
+  .slide-text{font-family:'Inter',sans-serif;font-size:9px;font-weight:500;color:#333;line-height:1.6}
+  .slide-bullet{font-family:'Inter',sans-serif;font-size:9px;font-weight:500;color:#333;line-height:1.6;padding-left:12px;position:relative}
+  .slide-bullet::before{content:'•';position:absolute;left:2px;color:#1a3a5c;font-weight:700}
+
+  .cia-row{display:flex;gap:5px;margin-top:4px}
+  .cia-box{flex:1;background:#eef4fb;border:1px solid #c8ddf0;border-radius:5px;padding:6px 4px;text-align:center}
+  .cia-icon{font-size:14px;margin-bottom:2px}
+  .cia-label{font-family:'Inter',sans-serif;font-size:8px;font-weight:700;color:#1a3a5c;letter-spacing:0.5px}
+
+  .title-slide{justify-content:center;align-items:center;text-align:center;background:linear-gradient(135deg,#1a3a5c,#2a5a8c)}
+  .title-slide .ts-code{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:2px;margin-bottom:4px}
+  .title-slide .ts-title{font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:#fff;line-height:1.4}
+  .title-slide .ts-line{width:40px;height:2px;background:rgba(255,255,255,0.3);margin:8px auto}
+  .title-slide .ts-lecturer{font-family:'Inter',sans-serif;font-size:9px;font-weight:600;color:rgba(255,255,255,0.6)}
+  .title-slide .ts-sem{font-family:'Inter',sans-serif;font-size:8px;font-weight:500;color:rgba(255,255,255,0.4);margin-top:3px}
+
+  .ty-slide{justify-content:center;align-items:center;text-align:center;background:linear-gradient(135deg,#1a3a5c,#2a5a8c)}
+  .ty-slide .ty-text{font-family:'Inter',sans-serif;font-size:18px;font-weight:700;color:#fff}
+  .ty-slide .ty-sub{font-family:'Inter',sans-serif;font-size:9px;font-weight:500;color:rgba(255,255,255,0.5);margin-top:6px}
+
+  /* Hidden text — each character is independent, sits on top (z-index 3) */
+  .hidden-char{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:3px;color:#ffffff;user-select:none;-webkit-user-select:none;position:relative;z-index:3;display:inline-block;padding:2px 1px;border-radius:2px;transition:color 0.15s}
+  .hidden-char.revealed{color:#ffffff}
+
+  /* Highlight canvas — middle layer (z-index 2), above slide content, below hidden text */
+  .hl-canvas{position:absolute;top:0;left:0;z-index:2;pointer-events:none;opacity:0.5}
+  .hl-canvas.drawing{pointer-events:auto;cursor:crosshair}
+
+  /* Tool bar */
+  .tool-bar{display:flex;align-items:center;gap:6px;padding:6px 10px;background:rgba(0,0,0,0.4);border-top:1px solid rgba(51,156,255,0.1);min-height:40px}
+  .tool-btn{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;cursor:pointer;user-select:none;transition:all 0.2s;border:1px solid transparent}
+  .tool-btn .tool-icon{font-size:14px}
+  .tool-btn .tool-label{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:rgba(91,184,255,0.6);letter-spacing:1px}
+  .tool-btn:hover{background:rgba(255,220,50,0.08)}
+  .tool-btn.active{background:rgba(255,220,50,0.12);border-color:rgba(255,220,50,0.4)}
+  .tool-btn.active .tool-label{color:rgba(255,220,50,0.9)}
+  .tool-hidden{display:none}
+  .reset-btn{margin-left:auto}
+  .reset-btn .tool-label{color:rgba(255,100,100,0.6)}
+  .reset-btn:hover{background:rgba(255,100,100,0.08)}
+  .reset-btn:hover .tool-label{color:rgba(255,100,100,0.9)}
+
+  .thumb-strip{display:flex;gap:4px;padding:6px 10px;background:rgba(0,0,0,0.3);border-top:1px solid rgba(51,156,255,0.08);overflow-x:auto}
+  .thumb{width:44px;height:24px;border-radius:3px;border:1.5px solid rgba(51,156,255,0.15);background:rgba(255,255,255,0.08);cursor:pointer;transition:all 0.2s;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;color:rgba(91,184,255,0.4)}
+  .thumb:hover{border-color:rgba(91,184,255,0.4)}
+  .thumb.active{border-color:var(--blue-bright);background:rgba(91,184,255,0.12);color:var(--blue-bright);box-shadow:0 0 8px rgba(91,184,255,0.2)}
+
+  .input-section{margin-top:12px}
+  .input-group{margin-bottom:10px}
+  .input-group label{display:block;font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(91,184,255,0.7);font-weight:700;margin-bottom:6px;letter-spacing:1px;text-transform:uppercase}
+  .input-group input{width:100%;padding:10px 14px;background:rgba(51,156,255,0.06);border:1px solid rgba(51,156,255,0.2);border-radius:8px;color:#fff;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;outline:none;transition:all 0.3s}
+  .input-group input:focus{border-color:var(--blue-bright);box-shadow:0 0 15px rgba(51,156,255,0.15);background:rgba(51,156,255,0.1)}
+  .input-group input::placeholder{color:rgba(255,255,255,0.25)}
+  .btn{width:100%;padding:10px;background:linear-gradient(135deg,var(--blue-bright),var(--blue-dark));border:none;border-radius:8px;color:#fff;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all 0.3s;text-transform:uppercase;margin-top:4px}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(51,156,255,0.35)}
+  .btn:active{transform:translateY(0)}
+  .status{margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;text-align:center;min-height:16px;transition:all 0.3s}
+  .status.error{color:#ff5555}
+  .status.success{color:var(--blue-bright)}
+  .attempts-left{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:rgba(255,255,255,0.25);text-align:right;margin-top:4px}
+  .info-box{background:rgba(51,156,255,0.04);border:1px solid rgba(51,156,255,0.1);border-radius:8px;padding:10px 12px;margin-bottom:12px}
+  .info-text{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:rgba(91,184,255,0.7);line-height:1.6;letter-spacing:0.5px;text-align:center}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  .shake{animation:shake 0.3s ease}
+
+  .overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.92);z-index:200;align-items:center;justify-content:flex-start;flex-direction:column;padding:20px;padding-top:20px;text-align:center;animation:fadeIn 0.5s ease}
+  .overlay.show{display:flex}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .overlay .flag-box{background:rgba(51,156,255,0.08);border:2px solid var(--blue-bright);border-radius:16px;padding:24px 20px;max-width:320px;width:90%;animation:scaleIn 0.5s ease}
+  @keyframes scaleIn{from{transform:scale(0.8);opacity:0}to{transform:scale(1);opacity:1}}
+  .overlay .flag-box h2{font-family:'JetBrains Mono',monospace;color:var(--blue-bright);font-size:22px;font-weight:700;margin-bottom:12px;letter-spacing:2px}
+  .overlay .flag-box .flag{font-family:'JetBrains Mono',monospace;color:#fff;font-size:15px;font-weight:700;background:rgba(0,0,0,0.4);padding:12px 16px;border-radius:8px;margin:16px 0;word-break:break-all}
+  .overlay .flag-box p{color:rgba(255,255,255,0.65);font-size:14px;font-weight:700;line-height:1.6;margin-top:16px}
+  .overlay .flag-box a{display:inline-block;margin-top:20px;padding:12px 28px;background:var(--blue-bright);color:#0a0e17;text-decoration:none;border-radius:8px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;letter-spacing:1px}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="terminal-header">// SUS_SLIDES v68.83.84.65</div>
+
+  <div class="card" id="mainCard">
+    <div class="slide-viewer">
+      <div class="slide-toolbar">
+        <div class="slide-counter">SLIDE <span id="slideNum">1</span> / 5</div>
+        <div class="slide-nav">
+          <div class="nav-btn disabled" id="prevBtn" onclick="navSlide(-1)">◀</div>
+          <div class="nav-btn" id="nextBtn" onclick="navSlide(1)">▶</div>
+        </div>
+      </div>
+
+      <div class="slide-area">
+        <div class="slide active title-slide" id="s1">
+          <div class="ts-code">IT1248</div>
+          <div class="ts-title">Introduction to<br>(Not) Cybersecurity</div>
+          <div class="ts-line"></div>
+          <div class="ts-lecturer">School...?</div>
+          <div class="ts-sem">AY2026/27 Sem 1</div>
+        </div>
+
+        <div class="slide" id="s2">
+          <div class="slide-title-bar">
+            <div class="slide-title">What is (Not) Cybersecurity?</div>
+          </div>
+          <div class="slide-body">
+            <div class="slide-text">The art of surviving while pretending you know what's going on. Some examples:</div>
+            <div class="slide-bullet">Opening 67 browser tabs and calling it research</div>
+            <div class="slide-bullet">Accidentally replying all to the class email</div>
+            <div class="slide-bullet">Submitting at 11:59pm and calling it time management</div>
+            <div class="slide-bullet">Taking the longest route to class to avoid the sun</div>
+          </div>
+        </div>
+
+        <div class="slide" id="s3">
+          <div class="slide-title-bar">
+            <div class="slide-title">The (Not) CIA Triad</div>
+          </div>
+          <div class="slide-body">
+            <div class="cia-row">
+              <div class="cia-box">
+                <div class="cia-icon">☕</div>
+                <div class="cia-label">Coffee</div>
+              </div>
+              <div class="cia-box">
+                <div class="cia-icon">🍜</div>
+                <div class="cia-label">Instant noodles</div>
+              </div>
+              <div class="cia-box">
+                <div class="cia-icon">❄️</div>
+                <div class="cia-label">Air-con</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 4: Hidden text -->
+        <div class="slide" id="s4">
+          <div class="slide-title-bar">
+            <div class="slide-title">Common Threats</div>
+          </div>
+          <div class="slide-body">
+            <div class="slide-bullet">Phishing — tricking users into revealing info</div>
+            <div id="hiddenRow" style="display:flex;gap:0px"></div>
+            <div class="slide-bullet">Malware — software that damages systems</div>
+            <div class="slide-bullet">Ransomware — encrypting files for payment</div>
+          </div>
+        </div>
+
+        <div class="slide ty-slide" id="s5">
+          <div class="ty-text">Thank You!</div>
+          <div class="ty-sub">See you next week 👋</div>
+        </div>
+
+        <canvas class="hl-canvas" id="hlCanvas"></canvas>
+      </div>
+
+      <div class="tool-bar" id="toolBar">
+        <div class="tool-btn tool-hidden" id="hlTool" onclick="toggleHighlighter()">
+          <span class="tool-icon">🖍️</span>
+          <span class="tool-label">HIGHLIGHTER</span>
+        </div>
+        <div class="tool-btn tool-hidden reset-btn" id="resetTool" onclick="resetHighlights()">
+          <span class="tool-icon">↺</span>
+          <span class="tool-label">CLEAR</span>
+        </div>
+      </div>
+
+      <div class="thumb-strip">
+        <div class="thumb active" onclick="goSlide(0)">1</div>
+        <div class="thumb" onclick="goSlide(1)">2</div>
+        <div class="thumb" onclick="goSlide(2)">3</div>
+        <div class="thumb" onclick="goSlide(3)">4</div>
+        <div class="thumb" onclick="goSlide(4)">5</div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <div class="info-text">These slides are sus. One of them is the impostor.</div>
+    </div>
+
+    <div class="input-section">
+      <div class="input-group">
+        <label>Hidden Text</label>
+        <input type="text" id="answer" placeholder="Enter hidden text" autocomplete="off">
+      </div>
+      <button class="btn" onclick="checkAnswer()">Decode</button>
+      <div class="status" id="status"></div>
+      <div class="attempts-left" id="attempts"></div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="successOverlay">
+  <div class="flag-box">
+    <h2>HIDDEN TEXT FOUND</h2>
+    <div class="flag" id="flagDisplay"></div>
+    <p>Some dreams hide in plain sight, and you found yours. Now chase it.</p>
+    <p style="color:rgba(255,255,255,0.45);font-size:12px;font-weight:400;margin-top:8px;">
+      CDDC is a <strong style="color:var(--blue-bright);font-weight:700;">free</strong> cybersecurity competition <strong style="color:var(--blue-bright);font-weight:700;">with attractive prizes</strong>, open to students as part of DSTA BrainHack.
+    </p>
+    <a href="https://form.gov.sg/69a8e2c13646169c05291a98" target="_blank">REGISTER FOR CDDC →</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  var _k=[68,82,51,52,77];
+  var _f=[67,68,68,67,50,48,50,54,123,72,49,71,72,76,49,71,72,84,51,68,125];
+  var key='';for(var i=0;i<_k.length;i++)key+=String.fromCharCode(_k[i]);
+  var flag='';for(var i=0;i<_f.length;i++)flag+=String.fromCharCode(_f[i]);
+
+  var hiddenRow=document.getElementById('hiddenRow');
+  var charEls=[];
+  for(var i=0;i<key.length;i++){
+    var sp=document.createElement('span');
+    sp.className='hidden-char';
+    sp.textContent=key[i];
+    hiddenRow.appendChild(sp);
+    charEls.push(sp);
+  }
+
+  var current=0,total=5;
+  var slides=document.querySelectorAll('.slide');
+  var thumbs=document.querySelectorAll('.thumb');
+  var hlTool=document.getElementById('hlTool');
+  var resetTool=document.getElementById('resetTool');
+  var canvas=document.getElementById('hlCanvas');
+  var ctx=canvas.getContext('2d');
+  var hlActive=false;
+  var drawing=false;
+  var strokes=[],currentStroke=[];
+
+  function updateToolbar(){
+    if(current===3){
+      hlTool.classList.remove('tool-hidden');
+      resetTool.classList.remove('tool-hidden');
+      canvas.style.display='block';
+    } else {
+      hlTool.classList.add('tool-hidden');
+      resetTool.classList.add('tool-hidden');
+      hlActive=false;
+      hlTool.classList.remove('active');
+      canvas.classList.remove('drawing');
+      canvas.style.display='none';
+    }
+  }
+
+  window.goSlide=function(n){
+    slides[current].classList.remove('active');
+    thumbs[current].classList.remove('active');
+    current=n;
+    slides[current].classList.add('active');
+    thumbs[current].classList.add('active');
+    document.getElementById('slideNum').textContent=''+(current+1);
+    document.getElementById('prevBtn').classList.toggle('disabled',current===0);
+    document.getElementById('nextBtn').classList.toggle('disabled',current===total-1);
+    updateToolbar();
+    if(current===3)resizeCanvas();
+  };
+
+  window.navSlide=function(d){
+    var next=current+d;
+    if(next>=0&&next<total)goSlide(next);
+  };
+
+  function resizeCanvas(){
+    var area=document.querySelector('.slide-area');
+    canvas.width=area.offsetWidth;
+    canvas.height=area.offsetHeight;
+    canvas.style.width=area.offsetWidth+'px';
+    canvas.style.height=area.offsetHeight+'px';
+    redraw();
+  }
+
+  function redraw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.lineCap='round';ctx.lineJoin='round';
+    ctx.lineWidth=22;
+    ctx.strokeStyle='rgba(200,170,0,0.7)';
+    var all=strokes.concat(currentStroke.length>=2?[currentStroke]:[]);
+    for(var s=0;s<all.length;s++){
+      var pts=all[s];if(pts.length<2)continue;
+      ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);
+      for(var p=1;p<pts.length;p++)ctx.lineTo(pts[p].x,pts[p].y);
+      ctx.stroke();
+    }
+    checkProximity();
+  }
+
+  // Check if any highlight stroke is near each individual character
+  function checkProximity(){
+    var cRect=canvas.getBoundingClientRect();
+    var all=strokes.concat(currentStroke.length>=2?[currentStroke]:[]);
+
+    for(var ci=0;ci<charEls.length;ci++){
+      var el=charEls[ci];
+      var rect=el.getBoundingClientRect();
+      var cTop=rect.top-cRect.top;
+      var cBottom=rect.bottom-cRect.top;
+      var cLeft=rect.left-cRect.left;
+      var cRight=rect.right-cRect.left;
+      var margin=14;
+      var hit=false;
+
+      for(var s=0;s<all.length&&!hit;s++){
+        var pts=all[s];
+        for(var p=0;p<pts.length;p++){
+          if(pts[p].x>=cLeft-margin&&pts[p].x<=cRight+margin&&
+             pts[p].y>=cTop-margin&&pts[p].y<=cBottom+margin){
+            hit=true;break;
+          }
+        }
+      }
+      if(hit){
+        el.classList.add('revealed');
+      } else {
+        el.classList.remove('revealed');
+      }
+    }
+  }
+
+  window.toggleHighlighter=function(){
+    hlActive=!hlActive;
+    hlTool.classList.toggle('active',hlActive);
+    canvas.classList.toggle('drawing',hlActive);
+  };
+
+  window.resetHighlights=function(){
+    strokes=[];currentStroke=[];
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for(var i=0;i<charEls.length;i++) charEls[i].classList.remove('revealed');
+    redraw();
+  };
+
+  function getPos(e){
+    var rect=canvas.getBoundingClientRect();
+    var t=e.touches?e.touches[0]:e;
+    return{x:t.clientX-rect.left,y:t.clientY-rect.top};
+  }
+
+  function startDraw(e){
+    if(!hlActive||current!==3)return;
+    e.preventDefault();drawing=true;
+    currentStroke=[getPos(e)];
+  }
+  function moveDraw(e){
+    if(!drawing)return;e.preventDefault();
+    currentStroke.push(getPos(e));redraw();
+  }
+  function endDraw(){
+    if(!drawing)return;drawing=false;
+    if(currentStroke.length>1)strokes.push(currentStroke);
+    currentStroke=[];
+  }
+
+  canvas.addEventListener('mousedown',startDraw);
+  canvas.addEventListener('mousemove',moveDraw);
+  document.addEventListener('mouseup',endDraw);
+  canvas.addEventListener('touchstart',startDraw,{passive:false});
+  canvas.addEventListener('touchmove',moveDraw,{passive:false});
+  document.addEventListener('touchend',endDraw);
+
+  setTimeout(resizeCanvas,100);
+  window.addEventListener('resize',function(){if(current===3)resizeCanvas()});
+
+  // Swipe nav
+  var sx=0;
+  var sa=document.querySelector('.slide-area');
+  sa.addEventListener('touchstart',function(e){
+    if(hlActive)return;sx=e.touches[0].clientX;
+  },{passive:true});
+  sa.addEventListener('touchend',function(e){
+    if(hlActive)return;
+    var dx=e.changedTouches[0].clientX-sx;
+    if(Math.abs(dx)>50){
+      if(dx<0&&current<total-1)goSlide(current+1);
+      if(dx>0&&current>0)goSlide(current-1);
+    }
+  },{passive:true});
+
+  // Answer
+  var attempts=0;
+  var hints=[
+    "Have you looked at every slide?",
+    "Not all text is visible at first glance...",
+    "Slide 4 has a tool you can use...",
+    "Use the highlighter and drag across the slide.",
+    "White text on white \u2014 highlight to reveal!"
+  ];
+
+  window.checkAnswer=function(){
+    var input=document.getElementById('answer').value.trim().toUpperCase();
+    var status=document.getElementById('status');
+    var card=document.getElementById('mainCard');
+
+    if(input===key){
+      status.className='status success';
+      status.textContent='\u25CF Hidden message found';
+      document.getElementById('flagDisplay').textContent=flag;
+      setTimeout(function(){document.getElementById('successOverlay').classList.add('show')},600);
+      return;
+    }
+
+    attempts++;
+    card.classList.remove('shake');void card.offsetWidth;card.classList.add('shake');
+    status.className='status error';
+    status.textContent='\u2717 INCORRECT \u2014 '+(attempts<=hints.length?hints[attempts-1]:hints[hints.length-1]);
+    document.getElementById('attempts').textContent='Attempts: '+attempts;
+    document.getElementById('answer').value='';
+  };
+
+  document.getElementById('answer').addEventListener('keydown',function(e){if(e.key==='Enter')checkAnswer()});
+
+  updateToolbar();
+})();
+</script>
+</body>
+</html>
