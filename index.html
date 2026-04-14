@@ -311,36 +311,47 @@
     background: rgba(125, 211, 255, 0.1);
     border: 1.5px solid rgba(125, 211, 255, 0.5);
     border-radius: 8px;
-    color: var(--neon);
+    color: #fff;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px; font-weight: 700;
-    letter-spacing: 2px; text-transform: uppercase;
-    text-decoration: none; text-align: center;
-    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-align: center;
+    text-decoration: none;
+    text-shadow: 0 0 8px var(--neon-glow);
+    box-shadow: 0 0 20px rgba(125, 211, 255, 0.15), 0 0 40px rgba(91, 184, 255, 0.08);
     transition: all 0.3s ease;
-    text-shadow: 0 0 8px rgba(125, 211, 255, 0.4);
-    box-shadow: 0 0 12px rgba(125, 211, 255, 0.1);
   }
 
   .sticky-link:hover {
-    color: #fff;
+    background: rgba(125, 211, 255, 0.2);
     border-color: var(--neon);
-    background: rgba(125, 211, 255, 0.18);
-    box-shadow: 0 0 24px rgba(125, 211, 255, 0.3), 0 0 48px rgba(91, 184, 255, 0.12);
+    box-shadow: 0 0 30px rgba(125, 211, 255, 0.3), 0 0 60px rgba(91, 184, 255, 0.15);
+    transform: translateY(-1px);
+  }
+
+  #particles {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
   }
 
   .particle {
-    position: fixed; width: 2px; height: 2px;
-    background: var(--blue-bright); border-radius: 50%;
-    pointer-events: none; z-index: 5; opacity: 0;
-    animation: float linear infinite;
+    position: absolute;
+    bottom: -10px;
+    background: var(--neon);
+    border-radius: 50%;
+    opacity: 0;
+    animation: floatUp linear forwards;
   }
 
-  @keyframes float {
-    0% { transform: translateY(100vh); opacity: 0; }
+  @keyframes floatUp {
+    0% { opacity: 0; transform: translateY(0); }
     10% { opacity: 0.6; }
-    90% { opacity: 0.6; }
-    100% { transform: translateY(-20px); opacity: 0; }
+    90% { opacity: 0.2; }
+    100% { opacity: 0; transform: translateY(-100vh); }
   }
 </style>
 </head>
@@ -349,37 +360,24 @@
 <div id="particles"></div>
 
 <div class="container">
-  <div class="terminal-header">// CDDC_PORTAL v68.83.84.65</div>
 
-  <div class="card" style="text-align: center;">
+  <div class="card">
     <div class="title-section">
-      <div class="title-sub">CYBER DEFENDERS<br>DISCOVERY CAMP</div>
-      <div class="title-tagline">A FREE CYBERSECURITY CTF FOR STUDENTS</div>
+      <div class="title-sub">CDDC 2026</div>
+      <div class="title-tagline">CYBER DEFENDERS DISCOVERY CAMP</div>
     </div>
   </div>
 
   <div class="card">
-    <div class="countdown-label">> REGISTRATION_CLOSES</div>
+    <div class="countdown-label">> COUNTDOWN_TO_LAUNCH</div>
     <div class="countdown-row">
-      <div class="cd-unit">
-        <div class="cd-value" id="days">--</div>
-        <div class="cd-label">Days</div>
-      </div>
+      <div class="cd-unit"><div class="cd-value" id="days">--</div><div class="cd-label">Days</div></div>
       <div class="cd-sep">:</div>
-      <div class="cd-unit">
-        <div class="cd-value" id="hours">--</div>
-        <div class="cd-label">Hrs</div>
-      </div>
+      <div class="cd-unit"><div class="cd-value" id="hours">--</div><div class="cd-label">Hrs</div></div>
       <div class="cd-sep">:</div>
-      <div class="cd-unit">
-        <div class="cd-value" id="mins">--</div>
-        <div class="cd-label">Min</div>
-      </div>
+      <div class="cd-unit"><div class="cd-value" id="mins">--</div><div class="cd-label">Min</div></div>
       <div class="cd-sep">:</div>
-      <div class="cd-unit">
-        <div class="cd-value" id="secs">--</div>
-        <div class="cd-label">Sec</div>
-      </div>
+      <div class="cd-unit"><div class="cd-value" id="secs">--</div><div class="cd-label">Sec</div></div>
     </div>
   </div>
 
@@ -401,12 +399,20 @@
     <div class="section-label">> PUZZLES</div>
     <div class="challenge-list">
 
+      <a href="8.html" class="challenge-link">
+        <div class="challenge-dot"></div>
+        <div class="challenge-info">
+          <div class="challenge-name">SUS SLIDES</div>
+        </div>
+        <div class="challenge-new">NEW</div>
+        <div class="challenge-arrow">›</div>
+      </a>
+
       <a href="7.html" class="challenge-link">
         <div class="challenge-dot"></div>
         <div class="challenge-info">
           <div class="challenge-name">KEEP TYPING</div>
         </div>
-        <div class="challenge-new">NEW</div>
         <div class="challenge-arrow">›</div>
       </a>
 
