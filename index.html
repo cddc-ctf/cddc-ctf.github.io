@@ -35,7 +35,7 @@
     overflow-x: hidden;
     position: relative;
     padding-top: 20px;
-    padding-bottom: 60px;
+    padding-bottom: 80px;
   }
 
   body::before {
@@ -70,16 +70,6 @@
     width: 90%;
     max-width: 320px;
     padding: 16px;
-  }
-
-  .terminal-header {
-    font-family: 'JetBrains Mono', monospace;
-    color: var(--blue);
-    font-size: 11px;
-    margin-bottom: 8px;
-    opacity: 0.8;
-    letter-spacing: 1px;
-    font-weight: 700;
   }
 
   .card {
@@ -137,6 +127,100 @@
     letter-spacing: 2px; margin-top: 6px; text-transform: uppercase;
   }
 
+  /* ── URGENCY HIGHLIGHT ── */
+  .urgency-card {
+    position: relative;
+    background:
+      linear-gradient(135deg, rgba(255, 90, 90, 0.10), rgba(255, 180, 70, 0.08)),
+      rgba(20, 12, 18, 0.9);
+    border: 1px solid rgba(255, 130, 90, 0.45);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    animation: urgPulse 2.4s ease-in-out infinite;
+  }
+
+  @keyframes urgPulse {
+    0%, 100% { box-shadow: 0 0 18px rgba(255, 110, 90, 0.18), 0 0 36px rgba(255, 110, 90, 0.08); }
+    50%      { box-shadow: 0 0 28px rgba(255, 110, 90, 0.36), 0 0 60px rgba(255, 110, 90, 0.18); }
+  }
+
+  .urgency-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 180, 90, 0.7), transparent);
+  }
+
+  .urg-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    color: #ffb070;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+
+  .urg-tag .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #ff7a55;
+    box-shadow: 0 0 8px rgba(255, 120, 80, 0.9);
+    animation: urgBlink 1s ease-in-out infinite;
+  }
+
+  @keyframes urgBlink {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.25; }
+  }
+
+  .urg-headline {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.4;
+    letter-spacing: 0.3px;
+    margin-bottom: 6px;
+  }
+
+  .urg-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.55;
+    margin-bottom: 12px;
+  }
+
+  .urg-cta {
+    display: block;
+    width: 100%;
+    padding: 11px 14px;
+    background: linear-gradient(135deg, #ff7a55, #ffaa55);
+    color: #1a0e08;
+    text-decoration: none;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-align: center;
+    box-shadow: 0 4px 14px rgba(255, 120, 80, 0.25);
+    transition: all 0.2s ease;
+  }
+
+  .urg-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 22px rgba(255, 120, 80, 0.4);
+  }
+
   .event-label {
     font-family: 'JetBrains Mono', monospace;
     font-size: 9px; font-weight: 700;
@@ -189,12 +273,12 @@
 
   @keyframes borderGlow {
     0%, 100% { border-color: rgba(125, 211, 255, 0.25); box-shadow: 0 0 10px rgba(91, 184, 255, 0.06), inset 0 0 10px rgba(91, 184, 255, 0.02); }
-    50% { border-color: rgba(125, 211, 255, 0.45); box-shadow: 0 0 16px rgba(125, 211, 255, 0.12), inset 0 0 14px rgba(91, 184, 255, 0.04); }
+    50%      { border-color: rgba(125, 211, 255, 0.45); box-shadow: 0 0 16px rgba(125, 211, 255, 0.12), inset 0 0 14px rgba(91, 184, 255, 0.04); }
   }
 
   .challenge-link {
     display: flex; align-items: center; gap: 12px;
-    padding: 2px 14px;
+    padding: 12px 14px;
     background: rgba(91, 184, 255, 0.06);
     border: 1px solid rgba(125, 211, 255, 0.3);
     border-radius: 10px; text-decoration: none;
@@ -226,12 +310,6 @@
     letter-spacing: 1px; text-shadow: none;
   }
 
-  .challenge-desc {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 8px; font-weight: 700;
-    color: rgba(125, 211, 255, 0.4); letter-spacing: 1px; margin-top: 3px;
-  }
-
   .challenge-arrow {
     font-family: 'JetBrains Mono', monospace;
     font-size: 22px; font-weight: 700; color: var(--neon);
@@ -254,7 +332,6 @@
     flex-shrink: 0;
   }
 
-  /* ── LOCKED CHALLENGE ── */
   .challenge-link.locked {
     animation: none;
     border-color: rgba(51, 156, 255, 0.1);
@@ -273,15 +350,6 @@
   .challenge-link.locked .challenge-arrow {
     color: rgba(125, 211, 255, 0.2);
     text-shadow: none;
-  }
-
-  .more-hint {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 8px; font-weight: 700;
-    color: rgba(125, 211, 255, 0.25);
-    letter-spacing: 1px;
-    text-align: center;
-    margin-top: 10px;
   }
 
   .sticky-footer {
@@ -348,10 +416,10 @@
   }
 
   @keyframes floatUp {
-    0% { opacity: 0; transform: translateY(0); }
-    10% { opacity: 0.6; }
-    90% { opacity: 0.2; }
-    100% { opacity: 0; transform: translateY(-100vh); }
+    0%   { opacity: 0;   transform: translateY(0); }
+    10%  { opacity: 0.6; }
+    90%  { opacity: 0.2; }
+    100% { opacity: 0;   transform: translateY(-100vh); }
   }
 </style>
 </head>
@@ -369,7 +437,7 @@
   </div>
 
   <div class="card">
-    <div class="countdown-label">> REGISTRATION_ENDS_IN</div>
+    <div class="countdown-label">&gt; REGISTRATION_ENDS_IN</div>
     <div class="countdown-row">
       <div class="cd-unit"><div class="cd-value" id="days">--</div><div class="cd-label">Days</div></div>
       <div class="cd-sep">:</div>
@@ -381,8 +449,16 @@
     </div>
   </div>
 
+  <!-- ── URGENCY HIGHLIGHT ── -->
+  <div class="urgency-card">
+    <div class="urg-tag"><span class="dot"></span> FINAL CALL · UNDER 24H LEFT</div>
+    <div class="urg-headline">Last Chance to Register</div>
+    <div class="urg-sub">Pro-tip: register now, strategize later.</div>
+    <a href="https://form.gov.sg/69a8e2c13646169c05291a98" target="_blank" class="urg-cta">SECURE MY SPOT →</a>
+  </div>
+
   <div class="card">
-    <div class="event-label">> KEY_DATES</div>
+    <div class="event-label">&gt; KEY_DATES</div>
     <div class="event-list">
       <div class="event-row">
         <div class="event-name">QUALIFIERS <span class="event-tag">24H VIRTUAL</span></div>
@@ -396,7 +472,7 @@
   </div>
 
   <div class="card puzzles-card">
-    <div class="section-label">> PUZZLES</div>
+    <div class="section-label">&gt; PUZZLES</div>
     <div class="challenge-list">
 
       <a href="10.html" class="challenge-link">
@@ -500,31 +576,34 @@
 </div>
 
 <script>
+  // Cutoff: 3 May 2026 00:00:00 +08:00
+  // (last visible non-zero tick is 2 May 2026 23:59:59 +08:00)
   const TARGET = new Date('2026-05-03T00:00:00+08:00').getTime();
 
   function pad(n) { return String(n).padStart(2, '0'); }
 
   function updateCountdown() {
-    const now = Date.now();
-    let diff = TARGET - now;
+    // Math.max guarantees diff can never be negative,
+    // even if the system clock drifts past the cutoff.
+    let diff = Math.max(0, TARGET - Date.now());
 
-    if (diff <= 0) {
-      document.getElementById('days').textContent = '00';
+    if (diff === 0) {
+      document.getElementById('days').textContent  = '00';
       document.getElementById('hours').textContent = '00';
-      document.getElementById('mins').textContent = '00';
-      document.getElementById('secs').textContent = '00';
+      document.getElementById('mins').textContent  = '00';
+      document.getElementById('secs').textContent  = '00';
       return;
     }
 
     const d = Math.floor(diff / 86400000); diff %= 86400000;
-    const h = Math.floor(diff / 3600000); diff %= 3600000;
-    const m = Math.floor(diff / 60000); diff %= 60000;
+    const h = Math.floor(diff / 3600000);  diff %= 3600000;
+    const m = Math.floor(diff / 60000);    diff %= 60000;
     const s = Math.floor(diff / 1000);
 
-    document.getElementById('days').textContent = pad(d);
+    document.getElementById('days').textContent  = pad(d);
     document.getElementById('hours').textContent = pad(h);
-    document.getElementById('mins').textContent = pad(m);
-    document.getElementById('secs').textContent = pad(s);
+    document.getElementById('mins').textContent  = pad(m);
+    document.getElementById('secs').textContent  = pad(s);
   }
 
   updateCountdown();
